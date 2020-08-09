@@ -40,4 +40,12 @@ public class Notice {
         this.content = content;
         this.type = type;
     }
+
+    public Long getId() {
+        return id_notice;
+    }
+
+    public void setId(Long id) {
+        this.id_notice = id_notice;
+    }
 }
