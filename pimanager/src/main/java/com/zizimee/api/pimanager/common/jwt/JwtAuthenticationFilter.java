@@ -34,7 +34,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             httpServletResponse.setCharacterEncoding("utf8");
 
             ObjectMapper objectMapper = new ObjectMapper();
-            String result = objectMapper.writeValueAsString()
+            String result = objectMapper.writeValueAsString("Fail");
+            httpServletResponse.getWriter().write(result);
+            return;
         }
         chain.doFilter(request, response);
     }
