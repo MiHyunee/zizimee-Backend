@@ -8,8 +8,6 @@ import com.zizimee.api.pimanager.notice.Entity.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -18,28 +16,28 @@ public class NoticeService {
 
     @Transactional
     public Long save(NoticeSaveRequestDto requestDto){
-        return noticeRepository.save(requestDto.toEntity()).getId();
+        return noticeRepository.save(requestDto.toEntity()).getId_notice();
     }
 
     @Transactional
-    public Long update(Long id, NoticeUpdateRequestDto requestDto ){
-        Notice notice = noticeRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
+    public Long update(Long id_notice, NoticeUpdateRequestDto requestDto ){
+        Notice notice = noticeRepository.findById(id_notice)
+                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id_notice));
         notice.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getType());
-        return id;
+        return id_notice;
     }
 
     @Transactional
-    public void delete (Long id){
-        Notice notice = noticeRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
+    public void delete (Long id_notice){
+        Notice notice = noticeRepository.findById(id_notice)
+                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id_notice));
         noticeRepository.delete(notice);
     }
 
     @Transactional(readOnly=true)
-    public NoticeResponseDto findById(Long id){
-        Notice entity = noticeRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
+    public NoticeResponseDto findById(Long id_notice){
+        Notice entity = noticeRepository.findById(id_notice)
+                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id_notice));
         return new NoticeResponseDto(entity);
     }
 }
