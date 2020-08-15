@@ -18,7 +18,7 @@ public class Report extends BaseTimeEntity{
 
     @ManyToOne
     @JoinColumn(name = "id_enterprise")
-    private int id_enterprise;
+    private Integer id_enterprise;
 
     @Column(nullable = false)
     private String image_url;
