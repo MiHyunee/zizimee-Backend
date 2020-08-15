@@ -1,5 +1,6 @@
 package com.zizimee.api.pimanager.report.entity;
 
+import com.zizimee.api.pimanager.Enterprise.Entity.Enterprise;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
