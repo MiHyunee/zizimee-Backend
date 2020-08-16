@@ -1,5 +1,6 @@
 package com.zizimee.api.pimanager.notice.Controller;
 
+import com.zizimee.api.pimanager.notice.Dto.NoticeListResponseDto;
 import com.zizimee.api.pimanager.notice.Dto.NoticeResponseDto;
 import com.zizimee.api.pimanager.notice.Dto.NoticeSaveRequestDto;
 import com.zizimee.api.pimanager.notice.Dto.NoticeUpdateRequestDto;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -45,5 +47,11 @@ public class NoticeController {
     public NoticeResponseDto findById(@PathVariable Long id){
 
         return noticeService.findById(id);
+    }
+
+    @GetMapping("/notice")
+    public List<NoticeListResponseDto> findAll() {
+
+        return noticeService.findAllDesc();
     }
 }

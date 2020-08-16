@@ -1,5 +1,6 @@
 package com.zizimee.api.pimanager.notice.Service;
 
+import com.zizimee.api.pimanager.notice.Dto.NoticeListResponseDto;
 import com.zizimee.api.pimanager.notice.Dto.NoticeResponseDto;
 import com.zizimee.api.pimanager.notice.Dto.NoticeSaveRequestDto;
 import com.zizimee.api.pimanager.notice.Dto.NoticeUpdateRequestDto;
@@ -8,6 +9,9 @@ import com.zizimee.api.pimanager.notice.Entity.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -39,5 +43,12 @@ public class NoticeService {
         Notice entity = noticeRepository.findById(id_notice)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id_notice));
         return new NoticeResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NoticeListResponseDto> findAllDesc() {
+        return noticeRepository.findAllDesc().stream()
+                .map(NoticeListResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
