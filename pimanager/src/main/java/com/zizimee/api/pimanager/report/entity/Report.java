@@ -24,10 +24,10 @@ public class Report extends BaseTimeEntity{
     @Column(nullable = false)
     private String image_url;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private Date start_date;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private Date end_date;
 
     @Builder
