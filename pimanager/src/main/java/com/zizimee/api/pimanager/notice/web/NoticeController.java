@@ -1,18 +1,13 @@
 package com.zizimee.api.pimanager.notice.web;
 
-import com.zizimee.api.pimanager.notice.dto.NoticeListResponseDto;
 import com.zizimee.api.pimanager.notice.dto.NoticeResponseDto;
 import com.zizimee.api.pimanager.notice.dto.NoticeSaveRequestDto;
 import com.zizimee.api.pimanager.notice.dto.NoticeUpdateRequestDto;
 import com.zizimee.api.pimanager.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,34 +19,45 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @PostMapping("/notice")
-    public Long save(@RequestBody NoticeSaveRequestDto requestDto)
-    {
-
-        return noticeService.save(requestDto);
+    public ResponseEntity save(@RequestBody NoticeSaveRequestDto requestDto) {
+        Long id = noticeService.save(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(NoticeResponseDto.builder()
+                        .id(id)
+                        .build());
     }
 
     @PutMapping("/notice/{id}")
-    public Long update(@PathVariable Long id,
+    public ResponseEntity update(@PathVariable Long id,
                        @RequestBody NoticeUpdateRequestDto requestDto){
 
-        return noticeService.update(id, requestDto);
+        noticeService.update(id, requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(NoticeResponseDto.builder()
+                .id(id)
+                .build());
     }
 
     @DeleteMapping("/notice/{id}")
-    public Long delete(@PathVariable Long id){
+    public ResponseEntity delete(@PathVariable Long id){
         noticeService.delete(id);
-        return id;
+        return ResponseEntity.status(HttpStatus.OK)
+                .build();
     }
 
     @GetMapping("/notice/{id}")
-    public NoticeResponseDto findById(@PathVariable Long id){
+    public ResponseEntity<NoticeResponseDto> findById(@PathVariable Long id){
+        NoticeResponseDto dto = noticeService.findById(id);
 
-        return noticeService.findById(id);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/notice")
-    public List<NoticeListResponseDto> findAll() {
+    public ResponseEntity<List<NoticeResponseDto>> findAll() {
+        List<NoticeResponseDto> noticeList = noticeService.findAllDesc();
 
-        return noticeService.findAllDesc();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(noticeList);
     }
 }

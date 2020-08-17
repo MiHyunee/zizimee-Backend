@@ -1,6 +1,5 @@
 package com.zizimee.api.pimanager.notice.service;
 
-import com.zizimee.api.pimanager.notice.dto.NoticeListResponseDto;
 import com.zizimee.api.pimanager.notice.dto.NoticeResponseDto;
 import com.zizimee.api.pimanager.notice.dto.NoticeSaveRequestDto;
 import com.zizimee.api.pimanager.notice.dto.NoticeUpdateRequestDto;
@@ -20,35 +19,34 @@ public class NoticeService {
 
     @Transactional
     public Long save(NoticeSaveRequestDto requestDto){
-        return noticeRepository.save(requestDto.toEntity()).getId_notice();
+        return noticeRepository.save(requestDto.toEntity()).getId();
     }
 
     @Transactional
-    public Long update(Long id_notice, NoticeUpdateRequestDto requestDto ){
-        Notice notice = noticeRepository.findById(id_notice)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id_notice));
+    public void update(Long id, NoticeUpdateRequestDto requestDto ){
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
         notice.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getType());
-        return id_notice;
     }
 
     @Transactional
-    public void delete (Long id_notice){
-        Notice notice = noticeRepository.findById(id_notice)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id_notice));
+    public void delete (Long id){
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
         noticeRepository.delete(notice);
     }
 
     @Transactional(readOnly=true)
-    public NoticeResponseDto findById(Long id_notice){
-        Notice entity = noticeRepository.findById(id_notice)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id_notice));
+    public NoticeResponseDto findById(Long id){
+        Notice entity = noticeRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
         return new NoticeResponseDto(entity);
     }
 
     @Transactional(readOnly = true)
-    public List<NoticeListResponseDto> findAllDesc() {
+    public List<NoticeResponseDto> findAllDesc() {
         return noticeRepository.findAllDesc().stream()
-                .map(NoticeListResponseDto::new)
+                .map(NoticeResponseDto::new)
                 .collect(Collectors.toList());
     }
 }
