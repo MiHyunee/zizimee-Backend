@@ -3,14 +3,10 @@ package com.zizimee.api.pimanager.config;
 import com.zizimee.api.pimanager.common.jwt.JwtAuthenticationFilter;
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
@@ -18,30 +14,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        //basic authentication 비활성화
-        http.httpBasic().disable();
-        //개발 편의성 위해 csrf 토큰 검사 비활성화
-        http.csrf().disable();
+        http
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .csrf()
+                    .disable()           //개발 편의성 위해 csrf 토큰 검사 비활성화
+                .httpBasic()
+                    .disable()         //basic authentication 비활성화
+                .authorizeRequests() //URL별 권한 관리 설정 옵션 시작점(인가에 관련한 처리)
+                    .anyRequest()  //설정 값(antMatchers) 이외 나머지 URL
+                        .authenticated()  //인증된 사용자(로그인 한 사용자)들만 허용
+        ;
 
-        http.authorizeRequests().anyRequest().authenticated();
-
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        //security는 id-pw기반인증
+        //username = id
+        //session disable
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
+
 }

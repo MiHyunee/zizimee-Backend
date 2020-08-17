@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 
-@RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
+    //암호화 키 : 풀기 힘든 값으로 지정
     private String secretKey = "Zizimee";
 
     //토큰 유효시간 30일
@@ -27,7 +27,8 @@ public class JwtTokenProvider {
 
     public static final String HEADER_NAME = "PI-TOKEN";
 
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     //객체 초기화
     //secretKey를 Base64로 인코딩
@@ -36,7 +37,7 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    //jwt 토큰 생성
+    //라이브러리로 jwt 토큰 생성
     public String createToken(String userId) {
         /*
         *Claim == jwt의 속성정보의 한 조각 (name-value쌍)
@@ -51,7 +52,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(date)  //토큰 발행 시간 정보
                 .setExpiration(new Date(date.getTime() + tokenValidTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, secretKey)   //서명
                 .compact();
 
     }
