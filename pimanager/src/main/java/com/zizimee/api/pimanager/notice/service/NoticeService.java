@@ -1,11 +1,11 @@
-package com.zizimee.api.pimanager.notice.Service;
+package com.zizimee.api.pimanager.notice.service;
 
-import com.zizimee.api.pimanager.notice.Dto.NoticeListResponseDto;
-import com.zizimee.api.pimanager.notice.Dto.NoticeResponseDto;
-import com.zizimee.api.pimanager.notice.Dto.NoticeSaveRequestDto;
-import com.zizimee.api.pimanager.notice.Dto.NoticeUpdateRequestDto;
-import com.zizimee.api.pimanager.notice.Entity.Notice;
-import com.zizimee.api.pimanager.notice.Entity.NoticeRepository;
+import com.zizimee.api.pimanager.notice.dto.NoticeListResponseDto;
+import com.zizimee.api.pimanager.notice.dto.NoticeResponseDto;
+import com.zizimee.api.pimanager.notice.dto.NoticeSaveRequestDto;
+import com.zizimee.api.pimanager.notice.dto.NoticeUpdateRequestDto;
+import com.zizimee.api.pimanager.notice.entity.Notice;
+import com.zizimee.api.pimanager.notice.entity.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

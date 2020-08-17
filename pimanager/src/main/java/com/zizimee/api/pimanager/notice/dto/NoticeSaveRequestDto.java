@@ -1,6 +1,6 @@
-package com.zizimee.api.pimanager.notice.Dto;
+package com.zizimee.api.pimanager.notice.dto;
 
-import com.zizimee.api.pimanager.notice.Entity.Notice;
+import com.zizimee.api.pimanager.notice.entity.Notice;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

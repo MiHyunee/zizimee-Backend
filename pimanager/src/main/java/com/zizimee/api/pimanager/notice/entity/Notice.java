@@ -1,9 +1,8 @@
-package com.zizimee.api.pimanager.notice.Entity;
+package com.zizimee.api.pimanager.notice.entity;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

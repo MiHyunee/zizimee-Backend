@@ -1,4 +1,4 @@
-package com.zizimee.api.pimanager.notice.Entity;
+package com.zizimee.api.pimanager.notice.entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

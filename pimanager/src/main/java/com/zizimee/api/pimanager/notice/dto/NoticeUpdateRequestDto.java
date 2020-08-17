@@ -1,4 +1,4 @@
-package com.zizimee.api.pimanager.notice.Dto;
+package com.zizimee.api.pimanager.notice.dto;
 
 import lombok.Builder;
 import lombok.Getter;

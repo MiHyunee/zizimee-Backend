@@ -1,10 +1,10 @@
-package com.zizimee.api.pimanager.notice.Controller;
+package com.zizimee.api.pimanager.notice.web;
 
-import com.zizimee.api.pimanager.notice.Dto.NoticeListResponseDto;
-import com.zizimee.api.pimanager.notice.Dto.NoticeResponseDto;
-import com.zizimee.api.pimanager.notice.Dto.NoticeSaveRequestDto;
-import com.zizimee.api.pimanager.notice.Dto.NoticeUpdateRequestDto;
-import com.zizimee.api.pimanager.notice.Service.NoticeService;
+import com.zizimee.api.pimanager.notice.dto.NoticeListResponseDto;
+import com.zizimee.api.pimanager.notice.dto.NoticeResponseDto;
+import com.zizimee.api.pimanager.notice.dto.NoticeSaveRequestDto;
+import com.zizimee.api.pimanager.notice.dto.NoticeUpdateRequestDto;
+import com.zizimee.api.pimanager.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

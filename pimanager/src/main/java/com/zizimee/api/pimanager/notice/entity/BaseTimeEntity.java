@@ -1,4 +1,4 @@
-package com.zizimee.api.pimanager.notice.Entity;
+package com.zizimee.api.pimanager.notice.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
