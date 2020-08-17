@@ -30,6 +30,7 @@ public class JwtTokenProvider {
     @Autowired
     private UserDetailsService userDetailsService;
 
+
     //객체 초기화
     //secretKey를 Base64로 인코딩
     @PostConstruct

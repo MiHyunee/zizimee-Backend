@@ -15,6 +15,9 @@ import com.zizimee.api.pimanager.user.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -24,7 +27,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -91,10 +94,6 @@ public class UserService {
                         .build());
     }
 
-    private boolean isExisted(String uid) {
-        return userRepository.findByUid(uid).isPresent();
-    }
-
     private String getConvertedUidFromUid(String provider, String uid) {
         StringBuilder convertedUid = new StringBuilder();
         convertedUid.append(provider);
@@ -115,5 +114,14 @@ public class UserService {
         } else {
             throw new Exception("INVALID_TOKEN");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String id) {
+        User user = userRepository.getOne((long)Integer.valueOf(id));
+        if(!user.getId().equals((long)Integer.valueOf(id))) {
+            throw new UsernameNotFoundException("INVALID REQUEST");
+        }
+        return org.springframework.security.core.userdetails.User.builder().username(id).build();
     }
 }
