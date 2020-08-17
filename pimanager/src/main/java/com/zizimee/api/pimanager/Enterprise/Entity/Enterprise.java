@@ -12,13 +12,13 @@ import javax.persistence.*;
 public class Enterprise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_enterprise;
+    private Long idEnterprise;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String domain_address;
+    private String domainAddress;
 
     @Column(nullable = false)
     private String id;
@@ -27,9 +27,9 @@ public class Enterprise {
     private String password;
 
     @Builder
-    public Enterprise(String name, String domain_address, String id, String password){
+    public Enterprise(String name, String domainAddress, String id, String password){
         this.name = name;
-        this.domain_address = domain_address;
+        this.domainAddress = domainAddress;
         this.id = id;
         this.password = password;
     }

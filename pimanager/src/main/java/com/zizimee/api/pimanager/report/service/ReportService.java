@@ -20,19 +20,19 @@ public class ReportService {
     @Transactional
     public Long save(ReportSaveRequestDto requestDto){
 
-        return reportRepository.save(requestDto.toEntity()).getId_report();
+        return reportRepository.save(requestDto.toEntity()).getIdReport();
     }
 
     @Transactional
-    public void delete(Long id_report){
-        Report report = reportRepository.findById(id_report)
+    public void delete(Long idReport){
+        Report report = reportRepository.findById(idReport)
                 .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
         reportRepository.delete(report);
     }
 
     @Transactional(readOnly=true)
-    public ReportResponseDto findById(Long id_report) {
-        Report entity = reportRepository.findById(id_report)
+    public ReportResponseDto findById(Long idReport) {
+        Report entity = reportRepository.findById(idReport)
                 .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
         return new ReportResponseDto(entity);
     }

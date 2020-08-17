@@ -15,25 +15,25 @@ public class Report extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_report;
+    private Long idReport;
 
     @ManyToOne
-    @JoinColumn(name = "id_enterprise")
-    private Enterprise id_enterprise;
+    @JoinColumn(name = "idEnterprise")
+    private Enterprise idEnterprise;
 
     @Column(nullable = false)
-    private String image_url;
+    private String imageUrl;
 
     @Column(nullable = false)
-    private Date start_date;
+    private Date startDate;
 
     @Column(nullable = false)
-    private Date end_date;
+    private Date endDate;
 
     @Builder
-    public Report(String image_url, Date start_date, Date end_date){
-        this.image_url = image_url;
-        this.start_date = start_date;
-        this.end_date = end_date;
+    public Report(String imageUrl, Date startDate, Date endDate){
+        this.imageUrl = imageUrl;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }
