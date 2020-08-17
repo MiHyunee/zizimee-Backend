@@ -31,10 +31,10 @@ public class ReportService {
     }
 
     @Transactional(readOnly=true)
-    public ReportResponseDto findById(Long idReport) {
+    public String findById(Long idReport) {
         Report entity = reportRepository.findById(idReport)
                 .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
-        return new ReportResponseDto(entity);
+        return entity.getImageUrl();
     }
 
     @Transactional(readOnly = true)

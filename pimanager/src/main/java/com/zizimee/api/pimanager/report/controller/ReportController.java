@@ -27,7 +27,7 @@ public class ReportController {
     }
 
     @GetMapping("/report/{id}")
-    public ReportResponseDto findById(@PathVariable Long id){
+    public String findById(@PathVariable Long id){
 
         return  reportService.findById(id);
     }
