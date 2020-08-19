@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,8 +26,9 @@ public class JwtTokenProvider {
     //토큰 유효시간 30일
     private long tokenValidTime = 30 * 24 * 60 * 60 * 1000L;
 
-    public static final String HEADER_NAME = "PI-TOKEN";
+    public static final String HEADER_NAME = "Authorization";
 
+    @Qualifier("enterpriseService")
     @Autowired
     private UserDetailsService userDetailsService;
 
