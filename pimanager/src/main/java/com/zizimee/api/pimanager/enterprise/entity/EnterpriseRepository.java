@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
-    List<Enterprise> findByRegisterNmb(String registerNmb);
+    Optional<Enterprise> findByRegisterNmb(String registerNmb);
     Optional<Enterprise> findBySignUpId(String signUpId);
+    Optional<Enterprise> findByRegisterNmbAndSignUpId(String registerNmb, String signUpId);
 }

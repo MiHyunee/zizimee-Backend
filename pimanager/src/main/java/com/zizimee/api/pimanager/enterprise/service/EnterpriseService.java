@@ -1,9 +1,7 @@
 package com.zizimee.api.pimanager.enterprise.service;
 
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
-import com.zizimee.api.pimanager.enterprise.dto.RequestSignInDto;
-import com.zizimee.api.pimanager.enterprise.dto.RequestSignUpDto;
-import com.zizimee.api.pimanager.enterprise.dto.ResponseEnterpriseDto;
+import com.zizimee.api.pimanager.enterprise.dto.*;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -67,5 +66,22 @@ public class EnterpriseService implements UserDetailsService {
 
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEnterpriseDto findId(RequestFindIdDto requestFindIdDto) {
+        Enterprise enterprise = enterpriseRepository.findByRegisterNmb(requestFindIdDto.getRegisterNmb()).orElseThrow(()-> new IllegalArgumentException("Wrong RegisterNumber"));
 
+        return ResponseEnterpriseDto.builder()
+                .signUpId(enterprise.getSignUpId())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEnterpriseDto findPw(RequestFindPwDto requestFindPwDto) {
+        Enterprise enterprise = enterpriseRepository.findByRegisterNmbAndSignUpId(requestFindPwDto.getRegisterNmb(), requestFindPwDto.getSignUpId())
+                .orElseThrow(()-> new IllegalArgumentException("Invalid request"));
+
+        return ResponseEnterpriseDto.builder()
+                .password(enterprise.getPassword())
+                .build();
+    }
 }
