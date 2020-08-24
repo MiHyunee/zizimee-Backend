@@ -47,14 +47,14 @@ public class EnterpriseController {
         }
     }
 
-    @GetMapping("/findId")
+    @GetMapping("/idInquiry")
     public ResponseEntity<ResponseEnterpriseDto> findId(@RequestBody RequestFindIdDto requestFindIdDto) {
         ResponseEnterpriseDto dto = enterpriseService.findId(requestFindIdDto);
 
         return new ResponseEntity(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/findPw")
+    @GetMapping("/pwInquiry")
     public ResponseEntity<ResponseEnterpriseDto> findPw(@RequestBody RequestFindPwDto requestFindPwDto) {
         ResponseEnterpriseDto dto = enterpriseService.findPw(requestFindPwDto);
 

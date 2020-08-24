@@ -4,6 +4,7 @@ import com.zizimee.api.pimanager.common.jwt.JwtAuthenticationFilter;
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,9 +18,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().mvcMatchers("/user/sign-in", "/user/login",
+                "/enterprise/sign-up", "/enterprise/sign-in", "/enterprise/idInquiry", "/enterprise/pwInquiry",
+                "/h2-console/**", "/swagger-resources/**", "/swagger-ui.html",
+                "/v2/api-docs" , "/configuration/ui" , "/configuration/security");
+    }
+
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        /*
         http
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -31,8 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                     .disable()  //basic authentication 비활성화
                 .authorizeRequests() //URL별 권한 관리 설정 옵션 시작점(인가에 관련한 처리)
-                    .antMatchers("/login/*")
-                        .authenticated()
                     .anyRequest()  //설정 값(antMatchers) 이외 나머지 URL
                         .permitAll()  //인증된 사용자(로그인 한 사용자)들만 허용
         ;
@@ -42,13 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //session disable
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-         */
 
+        /*
         http.csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll();
+
+         */
     }
 
 }
