@@ -2,7 +2,6 @@ package com.zizimee.api.pimanager.enterprise.web;
 
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
 import com.zizimee.api.pimanager.enterprise.dto.*;
-import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.service.EnterpriseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 @RequestMapping("/enterprise")

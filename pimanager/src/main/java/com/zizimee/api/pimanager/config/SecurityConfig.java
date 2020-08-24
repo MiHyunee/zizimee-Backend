@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().mvcMatchers("/user/sign-in", "/user/login",
+        web.ignoring().antMatchers("/user/sign-in", "/user/login",
                 "/enterprise/sign-up", "/enterprise/sign-in", "/enterprise/idInquiry", "/enterprise/pwInquiry",
                 "/h2-console/**", "/swagger-resources/**", "/swagger-ui.html",
                 "/v2/api-docs" , "/configuration/ui" , "/configuration/security");
@@ -48,16 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //username = id
         //session disable
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
-
-        /*
-        http.csrf().disable()
-                .headers().frameOptions().disable()
-                .and()
-                .authorizeRequests()
-                .anyRequest().permitAll();
-
-         */
     }
 
 }
