@@ -27,7 +27,7 @@ public class JwtTokenProvider {
 
     public static final String HEADER_NAME = "Authorization";
 
-    @Qualifier("enterpriseService")
+    @Qualifier("EnterpriseService")
     private UserDetailsService userDetailsService;
 
 
