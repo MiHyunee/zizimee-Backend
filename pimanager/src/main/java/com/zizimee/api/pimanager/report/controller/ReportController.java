@@ -1,10 +1,11 @@
 package com.zizimee.api.pimanager.report.controller;
 
-import com.zizimee.api.pimanager.report.dto.ReportListResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportSaveRequestDto;
 import com.zizimee.api.pimanager.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +17,18 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping("/report")
-    public Long save(@RequestBody ReportSaveRequestDto requestDto){
-        return reportService.save(requestDto);
+    public ResponseEntity save(@RequestBody ReportSaveRequestDto requestDto){
+        Long id = reportService.save(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ReportResponseDto.builder()
+                        .id(id).build());
     }
 
     @DeleteMapping("/report/{id}")
-    public Long delete(@PathVariable Long id){
+    public ResponseEntity delete(@PathVariable Long id){
         reportService.delete(id);
-        return id;
+        return ResponseEntity.status(HttpStatus.OK)
+                .build();
     }
 
     @GetMapping("/report/{id}")
@@ -33,8 +38,10 @@ public class ReportController {
     }
 
     @GetMapping("/report")
-    public List<ReportListResponseDto> findAll() {
+    public ResponseEntity<List<ReportResponseDto>> findAll() {
+        List<ReportResponseDto> noticeList = reportService.findAllDesc();
 
-        return reportService.findAllDesc();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(noticeList);
     }
 }

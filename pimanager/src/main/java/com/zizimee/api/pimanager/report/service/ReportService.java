@@ -1,6 +1,5 @@
 package com.zizimee.api.pimanager.report.service;
 
-import com.zizimee.api.pimanager.report.dto.ReportListResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportSaveRequestDto;
 import com.zizimee.api.pimanager.report.entity.Report;
@@ -20,27 +19,27 @@ public class ReportService {
     @Transactional
     public Long save(ReportSaveRequestDto requestDto){
 
-        return reportRepository.save(requestDto.toEntity()).getIdReport();
+        return reportRepository.save(requestDto.toEntity()).getId();
     }
 
     @Transactional
     public void delete(Long idReport){
-        Report report = reportRepository.findById(idReport)
+        Report report = reportRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
         reportRepository.delete(report);
     }
 
     @Transactional(readOnly=true)
-    public String findById(Long idReport) {
-        Report entity = reportRepository.findById(idReport)
+    public String findById(Long id) {
+        Report report = reportRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
-        return entity.getImageUrl();
+        return report.getImageUrl();
     }
 
     @Transactional(readOnly = true)
-    public List<ReportListResponseDto> findAllDesc() {
+    public List<ReportResponseDto> findAllDesc() {
         return reportRepository.findAllDesc().stream()
-                .map(ReportListResponseDto::new)
+                .map(ReportResponseDto::new)
                 .collect(Collectors.toList());
     }
 

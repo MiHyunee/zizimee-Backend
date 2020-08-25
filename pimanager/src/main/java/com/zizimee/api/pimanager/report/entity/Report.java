@@ -4,7 +4,8 @@ import com.zizimee.api.pimanager.Enterprise.Entity.Enterprise;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 import javax.persistence.*;
 
@@ -15,25 +16,26 @@ public class Report extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idReport;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idEnterprise")
-    private Enterprise idEnterprise;
+    @JoinColumn(name="id_enterprise")
+    private Enterprise enterpriseId;
 
     @Column(nullable = false)
     private String imageUrl;
 
-    @Column(nullable = false)
-    private Date startDate;
+    @Temporal(TemporalType.DATE)
+    private LocalDate startDate;
 
-    @Column(nullable = false)
-    private Date endDate;
+    @Temporal(TemporalType.DATE)
+    private LocalDate endDate;
 
     @Builder
-    public Report(String imageUrl, Date startDate, Date endDate){
+    public Report(String imageUrl, LocalDate startDate, LocalDate endDate, Enterprise enterpriseId){
         this.imageUrl = imageUrl;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.enterpriseId = enterpriseId;
     }
 }

@@ -5,17 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
 public class ReportSaveRequestDto {
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String imageUrl;
 
     @Builder
-    public ReportSaveRequestDto(Date startDate, Date endDate, String imageUrl){
+    public ReportSaveRequestDto(LocalDate startDate, LocalDate endDate, String imageUrl){
         this.startDate = startDate;
         this.endDate = endDate;
         this.imageUrl = imageUrl;
