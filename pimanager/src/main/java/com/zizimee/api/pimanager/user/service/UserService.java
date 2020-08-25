@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Collections;
@@ -27,44 +28,45 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final HttpTransport httpTransport = new NetHttpTransport();
     private final JsonFactory jsonFactory = new JacksonFactory();
-    private final String CLIENT_ID = "앱 클라이언트 아이디 만들기";
+    private final String CLIENT_ID = "829147409625-kca8furr5virinugdn4h8tlukq7kjhrd.apps.googleusercontent.com";
 
 
     public ResponseEntity<ResponseSignUpDto> verifyIdToken(RequestSignUpDto requestDto) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
-                .setAudience(Collections.singleton(CLIENT_ID))
+                //.setAudience(Collections.singleton(CLIENT_ID))
                 .build();
 
-        //idToken 무결성 확인
-        GoogleIdToken idToken = verifier.verify(requestDto.getIdToken());
 
-        if(idToken != null) {
-            Payload payload = idToken.getPayload();
+            //idToken 무결성 확인
+            GoogleIdToken idToken = verifier.verify(requestDto.getIdToken());
 
-            String convertedUid = getConvertedUidFromUid(requestDto.getProvider().toString(),
-                    payload.getSubject());
+            if (idToken != null) {
+                Payload payload = idToken.getPayload();
 
-            Optional<User> optionalUser = userRepository.findByUid(convertedUid);
+                String convertedUid = getConvertedUidFromUid(requestDto.getProvider().toString(),
+                        payload.getSubject());
 
-            if(optionalUser.isPresent())
-                return signIn(convertedUid);
-            else {
-                return signUp(User.builder()
-                        .uid(convertedUid)
-                        .name((String) payload.get("name"))
-                        .profileImg((String) payload.get("picture"))
-                        .provider(requestDto.getProvider())
-                        .build());
+                Optional<User> optionalUser = userRepository.findByUid(convertedUid);
+
+                if (optionalUser.isPresent())
+                    return signIn(convertedUid);
+                else {
+                    return signUp(User.builder()
+                            .uid(convertedUid)
+                            .name((String) payload.get("name"))
+                            .profileImg((String) payload.get("picture"))
+                            .provider(requestDto.getProvider())
+                            .build());
+                }
+            } else {
+                throw new Exception("INVALID_IDTOKEN");
             }
-        } else {
-            throw new Exception("INVALID_IDTOKEN");
-        }
     }
 
     private ResponseEntity<ResponseSignUpDto> signIn(String uid) {
@@ -84,7 +86,7 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(loginUser);
 
-        String jwt = jwtTokenProvider.createToken(loginUser.getUid());
+        String jwt = jwtTokenProvider.createToken(Long.toString(loginUser.getId()));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseSignUpDto.builder()
@@ -105,8 +107,10 @@ public class UserService implements UserDetailsService {
 
     public ResponseEntity<ResponseSignUpDto> loginByToken(String token) throws Exception {
         if(jwtTokenProvider.validateToken(token)) {
-            User user = userRepository.getOne((long)Integer.parseInt(jwtTokenProvider.getUserId(token)));
 
+            User user = userRepository.findById(Long.parseLong(jwtTokenProvider.getUserId(token))).orElseThrow(()->new IllegalArgumentException("INVALID TOKEN"));
+
+            System.out.println(user.getName());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ResponseSignUpDto.builder()
                     .name(user.getName())
@@ -114,14 +118,5 @@ public class UserService implements UserDetailsService {
         } else {
             throw new Exception("INVALID_TOKEN");
         }
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String id) {
-        User user = userRepository.getOne((long)Integer.valueOf(id));
-        if(!user.getId().equals((long)Integer.valueOf(id))) {
-            throw new UsernameNotFoundException("INVALID REQUEST");
-        }
-        return org.springframework.security.core.userdetails.User.builder().username(id).build();
     }
 }

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +29,12 @@ public class Enterprise {
 
     private String domainAddress;
     private String registerNmb;
+
+    @ElementCollection
+    @CollectionTable(name = "CONSENT_LIST", joinColumns = @JoinColumn(name="ENTERPRISE_ID"))
+    @Column(name="CONSENT_DETAIL")
+    private List<String> consents = new ArrayList<>();
+
 
     @Builder
     public Enterprise(String name, String signUpId, String password, String domainAddress, String registerNmb, String profileImg) {
