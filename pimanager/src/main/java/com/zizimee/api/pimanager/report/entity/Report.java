@@ -1,10 +1,15 @@
 package com.zizimee.api.pimanager.report.entity;
 
-import com.zizimee.api.pimanager.Enterprise.Entity.Enterprise;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -15,24 +20,21 @@ public class Report extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idReport;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idEnterprise")
-    private Enterprise idEnterprise;
+    @JoinColumn(name = "id_enterprise")
+    private Enterprise enterprise;
 
-    @Column(nullable = false)
-    private String imageUrl;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
 
-    @Column(nullable = false)
-    private Date startDate;
-
-    @Column(nullable = false)
-    private Date endDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
 
     @Builder
-    public Report(String imageUrl, Date startDate, Date endDate){
-        this.imageUrl = imageUrl;
+    public Report(LocalDate startDate, LocalDate endDate, Enterprise enterprise){
+        this.enterprise = enterprise;
         this.startDate = startDate;
         this.endDate = endDate;
     }

@@ -1,24 +1,26 @@
 package com.zizimee.api.pimanager.report.dto;
 
-import com.zizimee.api.pimanager.Enterprise.Entity.Enterprise;
-import com.zizimee.api.pimanager.report.entity.Report;
+import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Map;
+
 
 @Getter
 public class ReportResponseDto {
-    private Long idReport;
-    private Enterprise idEnterprise;
-    private Date startDate;
-    private Date endDate;
-    private String imageUrl;
+    private String enterpriseName;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Long deleteCnt;
+    private Map<String, Integer> wordList;
 
-    public ReportResponseDto(Report entity){
-        this.idReport = getIdReport();
-        this.idEnterprise = getIdEnterprise();
-        this.startDate = getStartDate();
-        this.endDate = getEndDate();
-        this.imageUrl = getImageUrl();
+    @Builder
+    public ReportResponseDto(String enterpriseName, Long deleteCnt, Map<String, Integer> wordList, LocalDate startDate, LocalDate endDate){
+        this.enterpriseName = enterpriseName;
+        this.deleteCnt = deleteCnt;
+        this.wordList = wordList;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

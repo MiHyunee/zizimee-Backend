@@ -1,26 +1,44 @@
 package com.zizimee.api.pimanager.report.service;
 
+import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
+import com.zizimee.api.pimanager.report.dto.AnalysisDto;
 import com.zizimee.api.pimanager.report.dto.ReportListResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportSaveRequestDto;
 import com.zizimee.api.pimanager.report.entity.Report;
 import com.zizimee.api.pimanager.report.entity.ReportRepository;
+import com.zizimee.api.pimanager.request.entity.RequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ReportService {
+
     private final ReportRepository reportRepository;
+    private final RequestRepository requestRepository;
+    private final EnterpriseRepository enterpriseRepository;
+    private final Analysis analysis;
 
     @Transactional
-    public Long save(ReportSaveRequestDto requestDto){
+    public AnalysisDto save(ReportSaveRequestDto requestDto){
+        reportRepository.save(requestDto.toEntity(enterpriseRepository.getOne(requestDto.getIdEnterprise())));
+        Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(requestDto.getIdEnterprise()), "delete", requestDto.getStartDate(), requestDto.getEndDate());
+        List<String> contentList = requestRepository.getComments(requestDto.getIdEnterprise(), requestDto.getStartDate(), requestDto.getEndDate())
+                .stream().map(String::toString).collect(Collectors.toList());
+        Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
 
-        return reportRepository.save(requestDto.toEntity()).getIdReport();
+        return AnalysisDto.builder()
+                .deleteCnt(deleteCnt)
+                .wordList(wordMap)
+                .build();
     }
 
     @Transactional
@@ -31,10 +49,13 @@ public class ReportService {
     }
 
     @Transactional(readOnly=true)
-    public String findById(Long idReport) {
-        Report entity = reportRepository.findById(idReport)
-                .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
-        return entity.getImageUrl();
+    public AnalysisDto countInfo(Report report) {
+
+        Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(report.getEnterprise().getId()), "delete", report.getStartDate(), report.getEndDate());
+        List<String> contentList = requestRepository.getComments(report.getEnterprise().getId(), report.getStartDate(), report.getEndDate());
+        Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
+
+        return AnalysisDto.builder().deleteCnt(deleteCnt).wordList(wordMap).build();
     }
 
     @Transactional(readOnly = true)
