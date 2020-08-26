@@ -1,7 +1,6 @@
-package com.zizimee.api.pimanager.notice.entity;
+package com.zizimee.api.pimanager.request.entity;
 
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -14,9 +13,6 @@ import java.time.LocalDate;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
 
-    @CreatedDate
-    private LocalDate createdDate;
-
     @LastModifiedDate
-    private LocalDate updateDate;
+    private LocalDate doneDate;
 }
