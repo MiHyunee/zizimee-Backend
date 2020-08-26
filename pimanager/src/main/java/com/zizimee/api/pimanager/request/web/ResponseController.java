@@ -35,11 +35,4 @@ public class ResponseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/response")
-    public ResponseEntity<List<ResponseDto>> findAll() {
-        List<ResponseDto> responseList = responseService.findAllDesc();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseList);
-    }
 }

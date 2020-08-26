@@ -39,7 +39,6 @@ public class RequestController {
     @GetMapping("/request/{id}")
     public ResponseEntity<RequestResponseDto> findById(@PathVariable Long id){
         RequestResponseDto dto = requestService.findById(id);
-
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
