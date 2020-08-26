@@ -29,16 +29,6 @@ public class RequestController {
                 .body(RequestResponseDto.builder().id(id).build());
     }
 
-    @PutMapping("/request/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody RequestUpdateDto requestDto){
-        requestService.update(id, requestDto);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(RequestResponseDto.builder()
-                        .id(id)
-                        .build());
-    }
-
     @DeleteMapping("/request/{id}")
     public ResponseEntity delete(@PathVariable Long id){
         requestService.delete(id);

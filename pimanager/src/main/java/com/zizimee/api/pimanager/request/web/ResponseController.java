@@ -28,13 +28,6 @@ public class ResponseController {
                         .build());
     }
 
-    @DeleteMapping("/response/{id}")
-    public ResponseEntity delete(@PathVariable Long id){
-        responseService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .build();
-    }
-
     @GetMapping("/response/{id}")
     public ResponseEntity<ResponseDto> findById(@PathVariable Long id){
         ResponseDto dto = responseService.findById(id);
