@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 public class RequestSaveDto {
+
     private RequestType type;
     private String content;
     private LocalDate requestDate;
@@ -24,12 +25,14 @@ public class RequestSaveDto {
         this.name = name;
     }
 
-    public Request toEntity(Enterprise entId){
+    public Request toEntity(Enterprise enterpriseId, User userId){
         return Request.builder()
                 .type(type)
                 .content(content)
                 .requestDate(requestDate)
-                .enterpriseId(entId)
+                .enterpriseId(enterpriseId)
+                .userId(userId)
                 .build();
     }
+
 }

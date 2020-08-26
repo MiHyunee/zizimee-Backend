@@ -8,6 +8,7 @@ import com.zizimee.api.pimanager.request.dto.RequestUpdateDto;
 import com.zizimee.api.pimanager.request.dto.ResponseDto;
 import com.zizimee.api.pimanager.request.entity.Request;
 import com.zizimee.api.pimanager.request.entity.RequestRepository;
+import com.zizimee.api.pimanager.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +24,9 @@ public class RequestService {
     private final EnterpriseRepository enterpriseRepository;
 
     @Transactional
-    public Long save(RequestSaveDto requestDto){
+    public Long save(RequestSaveDto requestDto, User user){
         Enterprise entId = enterpriseRepository.findByName(requestDto.getName());
-        return requestRepository.save(requestDto.toEntity(entId)).getId();
+        return requestRepository.save(requestDto.toEntity(entId, user)).getId();
     }
     @Transactional
     public void update(Long id, RequestUpdateDto requestDto ){

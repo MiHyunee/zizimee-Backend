@@ -3,7 +3,9 @@ package com.zizimee.api.pimanager.request.web;
 import com.zizimee.api.pimanager.request.dto.*;
 import com.zizimee.api.pimanager.request.service.RequestService;
 import com.zizimee.api.pimanager.request.service.ResponseService;
+import com.zizimee.api.pimanager.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,13 @@ public class RequestController {
     private final ResponseService responseService;
 
     @PostMapping("/request")
-    public ResponseEntity save(@RequestBody RequestSaveDto requestDto){
-        Long id = requestService.save(requestDto);
+    public ResponseEntity save(@RequestBody RequestSaveDto requestDto,
+                               @AuthenticationPrincipal User user){
+        Long id = requestService.save(requestDto, user);
+
         ResponseSaveDto responseDto = new ResponseSaveDto();
         responseService.save(responseDto);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(RequestResponseDto.builder().id(id).build());
     }
