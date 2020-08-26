@@ -3,17 +3,14 @@ package com.zizimee.api.pimanager.report.service;
 import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import com.zizimee.api.pimanager.report.dto.AnalysisDto;
 import com.zizimee.api.pimanager.report.dto.ReportListResponseDto;
-import com.zizimee.api.pimanager.report.dto.ReportResponseDto;
 import com.zizimee.api.pimanager.report.dto.ReportSaveRequestDto;
 import com.zizimee.api.pimanager.report.entity.Report;
 import com.zizimee.api.pimanager.report.entity.ReportRepository;
 import com.zizimee.api.pimanager.request.entity.RequestRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,8 +39,8 @@ public class ReportService {
     }
 
     @Transactional
-    public void delete(Long idReport){
-        Report report = reportRepository.findById(idReport)
+    public void delete(Long id){
+        Report report = reportRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
         reportRepository.delete(report);
     }

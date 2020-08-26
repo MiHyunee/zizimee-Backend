@@ -8,7 +8,6 @@ import com.zizimee.api.pimanager.report.entity.Report;
 import com.zizimee.api.pimanager.report.entity.ReportRepository;
 import com.zizimee.api.pimanager.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
