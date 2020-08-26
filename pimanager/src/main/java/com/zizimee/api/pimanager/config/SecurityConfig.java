@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/user/sign-in", "/user/login",
                 "/enterprise/sign-up", "/enterprise/sign-in", "/enterprise/idInquiry", "/enterprise/pwInquiry",
                 "/h2-console/**", "/swagger-resources/**", "/swagger-ui.html",
-                "/v2/api-docs" , "/configuration/ui" , "/configuration/security");
+                "/v2/api-docs" , "/configuration/ui" , "/configuration/security", "/**");
     }
 
 
