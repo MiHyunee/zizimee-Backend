@@ -1,23 +1,14 @@
 package com.zizimee.api.pimanager.request.dto;
 
 import com.zizimee.api.pimanager.request.entity.Response;
-import com.zizimee.api.pimanager.request.entity.Response.Progress;
-import jdk.vm.ci.meta.Local;
-import lombok.Builder;
+import com.zizimee.api.pimanager.request.entity.Progress;
 
 import java.time.LocalDate;
 
 public class ResponseSaveDto{
-    private Progress progress;
-    private String content;
-    private LocalDate doneDate;
-
-    @Builder
-    public ResponseSaveDto(){
-        this.progress = Progress.InProgress;
-        this.content = "";
-        this.doneDate = null;
-    }
+    private Progress progress = Progress.InProgress;
+    private String content = "";
+    private LocalDate doneDate = null;
 
     public Response toEntity(){
         return Response.builder()
@@ -26,4 +17,6 @@ public class ResponseSaveDto{
                 .doneDate(doneDate)
                 .build();
     }
+
+
 }

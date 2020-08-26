@@ -43,11 +43,4 @@ public class ResponseService {
         return new ResponseDto(response);
     }
 
-    @Transactional(readOnly = true)
-    public List<ResponseDto> findAllDesc() {
-        return responseRepository.findAllDesc().stream()
-                .map(ResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
 }

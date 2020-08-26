@@ -2,7 +2,8 @@ package com.zizimee.api.pimanager.request.dto;
 
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.request.entity.Request;
-import com.zizimee.api.pimanager.request.entity.Request.Type;
+import com.zizimee.api.pimanager.request.entity.RequestType;
+import com.zizimee.api.pimanager.request.entity.RequestType;
 import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Getter;
 import lombok.Builder;
@@ -15,7 +16,7 @@ public class RequestResponseDto {
     private User userId;
     private Enterprise enterpriseId;
     private LocalDate requestDate;
-    private Type type;
+    private RequestType type;
     private String content;
 
     public RequestResponseDto(Request entity){

@@ -1,7 +1,7 @@
 package com.zizimee.api.pimanager.request.dto;
 
 import com.zizimee.api.pimanager.request.entity.Response;
-import com.zizimee.api.pimanager.request.entity.Response.Progress;
+import com.zizimee.api.pimanager.request.entity.Progress;
 import lombok.Getter;
 import lombok.Builder;
 

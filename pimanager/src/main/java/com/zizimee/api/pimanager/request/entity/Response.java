@@ -12,9 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class Response{
-    public enum Progress{
-        InProgress, DONE, REJECTED
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

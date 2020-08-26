@@ -2,7 +2,6 @@ package com.zizimee.api.pimanager.request.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
-//import com.zizimee.api.pimanager.notice.entity.BaseTimeEntity;
 import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +14,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class Request {
-    public enum Type{
-        LOOKUP, REMOVE
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,13 +31,13 @@ public class Request {
     private LocalDate requestDate;
 
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private RequestType type;
 
     @Lob
     private String content;
 
     @Builder
-    public Request(User userId, Enterprise enterpriseId, LocalDate requestDate, Type type, String content){
+    public Request(User userId, Enterprise enterpriseId, LocalDate requestDate, RequestType type, String content){
         this.userId = userId;
         this.enterpriseId = enterpriseId;
         this.requestDate = requestDate;
@@ -49,7 +45,7 @@ public class Request {
         this.content = content;
     }
 
-    public void update(Type type, String content, LocalDate requestDate){
+    public void update(RequestType type, String content, LocalDate requestDate){
         this.requestDate = requestDate;
         this.type = type;
         this.content = content;
