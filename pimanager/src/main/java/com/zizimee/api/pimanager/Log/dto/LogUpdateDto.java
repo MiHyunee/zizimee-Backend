@@ -8,18 +8,18 @@ import java.time.LocalDate;
 
 @Getter
 public class LogUpdateDto {
-    private User userId;
+    private String name;
     private String intend;
     private String providedInfo;
     private String thirdParty;
     private LocalDate useDate;
 
     @Builder
-    public LogUpdateDto(String intend, String providedInfo, String thirdParty, LocalDate useDate, User userId){
+    public LogUpdateDto(String intend, String providedInfo, String thirdParty, LocalDate useDate, String name){
         this.intend = intend;
         this.providedInfo = providedInfo;
         this.thirdParty = thirdParty;
         this.useDate = useDate;
-        this.userId = userId;
+        this.name = name;
         }
 }

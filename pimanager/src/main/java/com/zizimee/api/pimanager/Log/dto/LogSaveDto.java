@@ -10,22 +10,22 @@ import java.time.LocalDate;
 
 @Getter
 public class LogSaveDto {
-    private User userId;
     private String intend;
     private String providedInfo;
     private String thirdParty;
     private LocalDate useDate;
+    private String name;
 
     @Builder
-    public LogSaveDto(User userId, String intend, String providedInfo, String thirdParty, LocalDate useDate){
-        this.userId = userId;
+    public LogSaveDto(String intend, String providedInfo, String thirdParty, LocalDate useDate, String name){
         this.intend = intend;
         this.providedInfo = providedInfo;
         this.thirdParty = thirdParty;
         this.useDate = useDate;
+        this.name = name;
     }
 
-    public Log toEntity(){
+    public Log toEntity(User userId){
         return Log.builder()
                 .userId(userId)
                 .intend(intend)
