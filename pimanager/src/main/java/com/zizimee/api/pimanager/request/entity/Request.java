@@ -20,20 +20,20 @@ public class Request {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "User_id")
     private User userId;
 
     @ManyToOne
-    @JoinColumn(name = "ENTERPRISE_ID")
+    @JoinColumn(name = "Enterprise_id")
     private Enterprise enterpriseId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate requestDate;
 
     @Enumerated(EnumType.STRING)
     private RequestType type;
 
-    @Lob
+    @Column(length = 500)
     private String content;
 
     @Builder

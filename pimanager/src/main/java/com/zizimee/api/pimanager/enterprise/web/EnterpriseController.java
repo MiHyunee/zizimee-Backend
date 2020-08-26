@@ -2,7 +2,6 @@ package com.zizimee.api.pimanager.enterprise.web;
 
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
 import com.zizimee.api.pimanager.enterprise.dto.*;
-import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.service.EnterpriseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 @RequestMapping("/enterprise")
@@ -47,14 +45,14 @@ public class EnterpriseController {
         }
     }
 
-    @GetMapping("/findId")
+    @GetMapping("/idInquiry")
     public ResponseEntity<ResponseEnterpriseDto> findId(@RequestBody RequestFindIdDto requestFindIdDto) {
         ResponseEnterpriseDto dto = enterpriseService.findId(requestFindIdDto);
 
         return new ResponseEntity(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/findPw")
+    @GetMapping("/pwInquiry")
     public ResponseEntity<ResponseEnterpriseDto> findPw(@RequestBody RequestFindPwDto requestFindPwDto) {
         ResponseEnterpriseDto dto = enterpriseService.findPw(requestFindPwDto);
 

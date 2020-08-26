@@ -20,12 +20,13 @@ public class EnterpriseService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        Enterprise enterprise = enterpriseRepository.getOne((long)Integer.valueOf(id));
-        if(enterprise.getId().equals((long)Integer.valueOf(id))) {
+        Enterprise enterprise = enterpriseRepository.getOne(Long.valueOf(id));
+        if(enterprise.getId().equals(Long.valueOf(id))) {
             throw new UsernameNotFoundException("INVALID REQUEST");
         }
         return org.springframework.security.core.userdetails.User.builder().username(id).build();
     }
+
 
     public Long signUp(RequestSignUpDto requestSignUpDto) throws Exception {
         if(enterpriseRepository.findByRegisterNmb(requestSignUpDto.getRegisterNmb()) == null)
@@ -39,13 +40,13 @@ public class EnterpriseService implements UserDetailsService {
 
     public ResponseEnterpriseDto loginByToken(String token) throws Exception {
         if(jwtTokenProvider.validateToken(token)) {
-            Enterprise enterprise = enterpriseRepository.getOne((long)Integer.valueOf(jwtTokenProvider.getUserId(token)));
+            Enterprise enterprise = enterpriseRepository.getOne(Long.valueOf(jwtTokenProvider.getUserId(token)));
 
             return ResponseEnterpriseDto.builder()
                     .name(enterprise.getName())
                     .build();
         } else {
-            throw new Exception("INVALID TOKEN");
+            throw new Exception("invaid token");
         }
     }
 
