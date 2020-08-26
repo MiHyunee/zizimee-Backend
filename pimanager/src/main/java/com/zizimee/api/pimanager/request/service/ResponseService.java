@@ -1,10 +1,8 @@
 package com.zizimee.api.pimanager.request.service;
 
-import com.zizimee.api.pimanager.request.dto.RequestResponseDto;
 import com.zizimee.api.pimanager.request.dto.ResponseDto;
 import com.zizimee.api.pimanager.request.dto.ResponseSaveDto;
 import com.zizimee.api.pimanager.request.dto.ResponseUpdateDto;
-import com.zizimee.api.pimanager.request.entity.Request;
 import com.zizimee.api.pimanager.request.entity.Response;
 import com.zizimee.api.pimanager.request.entity.ResponseRepository;
 import lombok.RequiredArgsConstructor;
