@@ -9,4 +9,6 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
     Optional<Enterprise> findByRegisterNmb(String registerNmb);
     Optional<Enterprise> findBySignUpId(String signUpId);
     Optional<Enterprise> findByRegisterNmbAndSignUpId(String registerNmb, String signUpId);
+
+    Enterprise findByName(String name);
 }

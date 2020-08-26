@@ -1,9 +1,6 @@
 package com.zizimee.api.pimanager.request.web;
 
-import com.zizimee.api.pimanager.request.dto.RequestResponseDto;
-import com.zizimee.api.pimanager.request.dto.RequestSaveDto;
-import com.zizimee.api.pimanager.request.dto.RequestUpdateDto;
-import com.zizimee.api.pimanager.request.dto.ResponseSaveDto;
+import com.zizimee.api.pimanager.request.dto.*;
 import com.zizimee.api.pimanager.request.service.RequestService;
 import com.zizimee.api.pimanager.request.service.ResponseService;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +26,16 @@ public class RequestController {
                 .body(RequestResponseDto.builder().id(id).build());
     }
 
-    @DeleteMapping("/request/{id}")
-    public ResponseEntity delete(@PathVariable Long id){
-        requestService.delete(id);
+    @PutMapping("/request/{id}")
+    public ResponseEntity update(@PathVariable Long id,
+                                 @RequestBody RequestUpdateDto requestDto){
+
+        requestService.update(id, requestDto);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .build();
+                .body(RequestResponseDto.builder()
+                        .id(id)
+                        .build());
     }
 
     @GetMapping("/request/{id}")

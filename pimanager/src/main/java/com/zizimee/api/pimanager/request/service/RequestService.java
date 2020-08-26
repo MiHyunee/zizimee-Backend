@@ -1,5 +1,7 @@
 package com.zizimee.api.pimanager.request.service;
 
+import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import com.zizimee.api.pimanager.request.dto.RequestResponseDto;
 import com.zizimee.api.pimanager.request.dto.RequestSaveDto;
 import com.zizimee.api.pimanager.request.dto.RequestUpdateDto;
@@ -11,12 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class RequestService {
     private final RequestRepository requestRepository;
+    private final EnterpriseRepository enterpriseRepository;
 
     @Transactional
     public Long save(RequestSaveDto requestDto){
@@ -27,14 +31,8 @@ public class RequestService {
     public void update(Long id, RequestUpdateDto requestDto ){
         Request request = requestRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        request.update(requestDto.getType(), requestDto.getContent(), requestDto.getRequestDate());
-    }
-
-    @Transactional
-    public void delete (Long id){
-        Request request = requestRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        requestRepository.delete(request);
+        Enterprise entId = enterpriseRepository.findByName(requestDto.getName());
+        request.update(requestDto.getType(), requestDto.getContent(), requestDto.getRequestDate(),entId);
     }
 
     @Transactional(readOnly=true)

@@ -45,10 +45,11 @@ public class Request {
         this.content = content;
     }
 
-    public void update(RequestType type, String content, LocalDate requestDate){
+    public void update(RequestType type, String content, LocalDate requestDate, Enterprise enterpriseId){
         this.requestDate = requestDate;
         this.type = type;
         this.content = content;
+        this.enterpriseId = enterpriseId;
     }
 
 }
