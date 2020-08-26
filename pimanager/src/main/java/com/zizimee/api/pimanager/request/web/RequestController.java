@@ -30,7 +30,7 @@ public class RequestController {
     }
 
     @PutMapping("/request/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestParam RequestUpdateDto requestDto){
+    public ResponseEntity update(@PathVariable Long id, @RequestBody RequestUpdateDto requestDto){
         requestService.update(id, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)

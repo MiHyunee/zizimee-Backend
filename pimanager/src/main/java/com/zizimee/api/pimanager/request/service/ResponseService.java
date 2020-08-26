@@ -28,7 +28,7 @@ public class ResponseService {
     public void update(Long id, ResponseUpdateDto requestDto ){
         Response response = responseRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        response.update(requestDto.getProgress(), requestDto.getContent());
+        response.update(requestDto.getProgress(), requestDto.getContent(), requestDto.getDoneDate());
     }
 
     @Transactional
