@@ -24,10 +24,12 @@ public class ReportService {
     private final EnterpriseRepository enterpriseRepository;
     private final Analysis analysis;
 
+    private final String REQ_TYPE = "REMOVE";
+
     @Transactional
     public AnalysisDto save(ReportSaveRequestDto requestDto){
         reportRepository.save(requestDto.toEntity(enterpriseRepository.getOne(requestDto.getIdEnterprise())));
-        Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(requestDto.getIdEnterprise()), "delete", requestDto.getStartDate(), requestDto.getEndDate());
+        Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(requestDto.getIdEnterprise()), REQ_TYPE, requestDto.getStartDate(), requestDto.getEndDate());
         List<String> contentList = requestRepository.getComments(requestDto.getIdEnterprise(), requestDto.getStartDate(), requestDto.getEndDate())
                 .stream().map(String::toString).collect(Collectors.toList());
         Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
@@ -48,7 +50,7 @@ public class ReportService {
     @Transactional(readOnly=true)
     public AnalysisDto countInfo(Report report) {
 
-        Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(report.getEnterprise().getId()), "delete", report.getStartDate(), report.getEndDate());
+        Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(report.getEnterprise().getId()), REQ_TYPE, report.getStartDate(), report.getEndDate());
         List<String> contentList = requestRepository.getComments(report.getEnterprise().getId(), report.getStartDate(), report.getEndDate());
         Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
 
