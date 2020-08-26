@@ -1,6 +1,5 @@
 package com.zizimee.api.pimanager.request.web;
 
-import com.zizimee.api.pimanager.notice.dto.NoticeResponseDto;
 import com.zizimee.api.pimanager.request.dto.RequestResponseDto;
 import com.zizimee.api.pimanager.request.dto.RequestSaveDto;
 import com.zizimee.api.pimanager.request.dto.RequestUpdateDto;
