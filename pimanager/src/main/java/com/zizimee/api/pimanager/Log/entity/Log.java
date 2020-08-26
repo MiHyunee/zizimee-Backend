@@ -3,11 +3,9 @@ package com.zizimee.api.pimanager.Log.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.user.entity.User;
-import jdk.vm.ci.meta.Local;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import sun.jvm.hotspot.gc.shared.Generation;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -43,7 +41,7 @@ public class Log {
     private LocalDate useDate;
 
     @Builder
-    public void Log(User userId, Enterprise enterpriseId, String intend, String providedInfo, String thirdParty, LocalDate useDate){
+    public Log(User userId, Enterprise enterpriseId, String intend, String providedInfo, String thirdParty, LocalDate useDate){
         this.userId = userId;
         this.enterpriseId = enterpriseId;
         this.intend = intend;
@@ -51,4 +49,13 @@ public class Log {
         this.thirdParty = thirdParty;
         this.useDate = useDate;
     }
-}
+
+    public void update(User userId,String intend, String providedInfo, String thirdParty, LocalDate useDate){
+        this.userId = userId;
+        this.intend = intend;
+        this.providedInfo = providedInfo;
+        this.thirdParty = thirdParty;
+        this.useDate = useDate;
+    }
+
+    }
