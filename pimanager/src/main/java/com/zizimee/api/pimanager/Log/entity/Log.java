@@ -1,4 +1,4 @@
-package com.zizimee.api.pimanager.Log.entity;
+package com.zizimee.api.pimanager.log.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
