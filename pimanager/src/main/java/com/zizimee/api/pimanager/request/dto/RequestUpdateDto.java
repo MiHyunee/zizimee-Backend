@@ -10,14 +10,16 @@ import java.time.LocalDate;
 public class RequestUpdateDto {
     private RequestType type;
     private String content;
-    private LocalDate requestDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String name;
 
     @Builder
-    public RequestUpdateDto(RequestType type, String content, LocalDate requestDate, String name){
+    public RequestUpdateDto(RequestType type, String content, LocalDate startDate, LocalDate endDate, String name){
         this.type = type;
         this.content = content;
-        this.requestDate = requestDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.name = name;
     }
 }

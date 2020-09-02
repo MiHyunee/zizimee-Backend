@@ -14,14 +14,16 @@ public class RequestSaveDto {
 
     private RequestType type;
     private String content;
-    private LocalDate requestDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String name;
 
     @Builder
-    public RequestSaveDto(RequestType type, String content, LocalDate requestDate, String name){
+    public RequestSaveDto(RequestType type, String content, LocalDate startDate, LocalDate endDate, String name){
         this.type = type;
         this.content = content;
-        this.requestDate = requestDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.name = name;
     }
 
@@ -29,7 +31,8 @@ public class RequestSaveDto {
         return Request.builder()
                 .type(type)
                 .content(content)
-                .requestDate(requestDate)
+                .startDate(startDate)
+                .endDate(endDate)
                 .enterpriseId(enterpriseId)
                 .userId(userId)
                 .build();

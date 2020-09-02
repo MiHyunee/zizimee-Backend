@@ -15,17 +15,21 @@ public class RequestResponseDto {
     private Long id;
     private User userId;
     private Enterprise enterpriseId;
-    private LocalDate requestDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private RequestType type;
     private String content;
+    private LocalDate updateDate;
 
     public RequestResponseDto(Request entity){
         this.id = entity.getId();
         this.userId  = entity.getUserId();
         this.enterpriseId = entity.getEnterpriseId();
-        this.requestDate = entity.getRequestDate();
+        this.startDate = entity.getStartDate();
+        this.endDate = entity.getEndDate();
         this.type = entity.getType();
         this.content = entity.getContent();
+        this.updateDate = entity.getUpdateDate();
     }
 
     @Builder

@@ -33,7 +33,7 @@ public class RequestService {
         Request request = requestRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
         Enterprise entId = enterpriseRepository.findByName(requestDto.getName());
-        request.update(requestDto.getType(), requestDto.getContent(), requestDto.getRequestDate(),entId);
+        request.update(requestDto.getType(), requestDto.getContent(), requestDto.getStartDate(),requestDto.getEndDate(), entId);
     }
 
     @Transactional(readOnly=true)
