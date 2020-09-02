@@ -1,6 +1,5 @@
-package com.zizimee.api.pimanager.Log.dto;
+package com.zizimee.api.pimanager.log.dto;
 
-import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

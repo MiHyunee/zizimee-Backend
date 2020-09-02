@@ -1,10 +1,9 @@
-package com.zizimee.api.pimanager.Log.service;
+package com.zizimee.api.pimanager.log.service;
 
-import com.zizimee.api.pimanager.Log.dto.LogSaveDto;
-import com.zizimee.api.pimanager.Log.dto.LogUpdateDto;
-import com.zizimee.api.pimanager.Log.entity.Log;
-import com.zizimee.api.pimanager.Log.entity.LogRepository;
-import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.log.dto.LogSaveDto;
+import com.zizimee.api.pimanager.log.dto.LogUpdateDto;
+import com.zizimee.api.pimanager.log.entity.Log;
+import com.zizimee.api.pimanager.log.entity.LogRepository;
 import com.zizimee.api.pimanager.user.entity.User;
 import com.zizimee.api.pimanager.user.entity.UserRepository;
 import lombok.RequiredArgsConstructor;

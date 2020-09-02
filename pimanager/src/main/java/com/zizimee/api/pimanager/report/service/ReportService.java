@@ -30,7 +30,7 @@ public class ReportService {
     public AnalysisDto save(ReportSaveRequestDto requestDto){
         reportRepository.save(requestDto.toEntity(enterpriseRepository.getOne(requestDto.getIdEnterprise())));
         Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(requestDto.getIdEnterprise()), REQ_TYPE, requestDto.getStartDate(), requestDto.getEndDate());
-        List<String> contentList = requestRepository.getComments(requestDto.getIdEnterprise(), requestDto.getStartDate(), requestDto.getEndDate())
+        List<String> contentList = requestRepository.getContents(requestDto.getIdEnterprise(), requestDto.getStartDate(), requestDto.getEndDate())
                 .stream().map(String::toString).collect(Collectors.toList());
         Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
 
@@ -51,7 +51,7 @@ public class ReportService {
     public AnalysisDto countInfo(Report report) {
 
         Long deleteCnt = requestRepository.countByEnterpriseIdAndTypeAndRequestDateBetween(enterpriseRepository.getOne(report.getEnterprise().getId()), REQ_TYPE, report.getStartDate(), report.getEndDate());
-        List<String> contentList = requestRepository.getComments(report.getEnterprise().getId(), report.getStartDate(), report.getEndDate());
+        List<String> contentList = requestRepository.getContents(report.getEnterprise().getId(), report.getStartDate(), report.getEndDate());
         Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
 
         return AnalysisDto.builder().deleteCnt(deleteCnt).wordList(wordMap).build();

@@ -1,9 +1,9 @@
-package com.zizimee.api.pimanager.Log.web;
+package com.zizimee.api.pimanager.log.web;
 
-import com.zizimee.api.pimanager.Log.dto.LogResponseDto;
-import com.zizimee.api.pimanager.Log.dto.LogSaveDto;
-import com.zizimee.api.pimanager.Log.dto.LogUpdateDto;
-import com.zizimee.api.pimanager.Log.service.LogService;
+import com.zizimee.api.pimanager.log.dto.LogResponseDto;
+import com.zizimee.api.pimanager.log.dto.LogSaveDto;
+import com.zizimee.api.pimanager.log.dto.LogUpdateDto;
+import com.zizimee.api.pimanager.log.service.LogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
