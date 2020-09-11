@@ -1,6 +1,5 @@
 package com.zizimee.api.pimanager.user.dto;
 
-import com.zizimee.api.pimanager.user.entity.ProviderType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
