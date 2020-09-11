@@ -29,6 +29,8 @@ dependencies {
 
 	compile 'com.google.api-client:google-api-client:1.30.9'
 
+    compile 'org.seleniumhq.selenium:selenium-server:3.3.1'
+
 	compile 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	testImplementation 'org.springframework.security:spring-security-test'
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
