@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -24,6 +23,7 @@ public class User {
 
     private String profileImg;
 
+    private String fcmToken;
 
     @Builder
     public User(ProviderType provider, String uid, String name, String profileImg) {
@@ -31,5 +31,9 @@ public class User {
         this.uid = uid;
         this.name = name;
         this.profileImg = profileImg;
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
