@@ -21,11 +21,16 @@ public class User {
 
     private String profileImg;
 
+    private String fcmToken;
 
     @Builder
     public User(String uid, String name, String profileImg) {
         this.uid = uid;
         this.name = name;
         this.profileImg = profileImg;
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
