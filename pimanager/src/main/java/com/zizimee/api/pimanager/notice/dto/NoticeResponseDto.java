@@ -19,7 +19,7 @@ public class NoticeResponseDto {
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.type = entity.getType();
-        this.updateDate = entity.getUpdateDate;
+        this.updateDate = entity.getUpdateDate();
     }
 
     @Builder

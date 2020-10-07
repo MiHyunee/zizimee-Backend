@@ -11,12 +11,12 @@ public class ReportListResponseDto {
     private Long idReport;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     public ReportListResponseDto(Report entity) {
         this.idReport = entity.getId();
         this.startDate = entity.getStartDate();
         this.endDate = entity.getEndDate();
-        this.createdDate = entity.getCreatedDate();
+        this.createdDate = entity.getUpdateDate();
     }
 }
