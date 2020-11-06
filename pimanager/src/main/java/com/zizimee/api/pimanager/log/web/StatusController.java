@@ -7,12 +7,13 @@ import com.zizimee.api.pimanager.log.service.StatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.crypto.NoSuchPaddingException;
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,7 +21,7 @@ public class StatusController {
     private StatusService statusService;
 
     @PostMapping("/status")
-    public ResponseEntity save(@RequestBody StatusSaveDto requestDto){
+    public ResponseEntity save(@RequestBody StatusSaveDto requestDto) throws NoSuchAlgorithmException, NoSuchPaddingException {
         Long id = statusService.save(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(StatusResponseDto.builder().id(id).build());

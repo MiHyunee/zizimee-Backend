@@ -43,4 +43,5 @@ public class ConsentStatus {
         this.signature = signature;
     }
 
+
 }

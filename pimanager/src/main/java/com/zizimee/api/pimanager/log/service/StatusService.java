@@ -20,7 +20,7 @@ public class StatusService {
     private StatusRepository statusRepository;
 
 
-    public Long save(StatusSaveDto requestDto) throws NoSuchPaddingException, NoSuchAlgorithmException{
+    /*public Long save(StatusSaveDto requestDto) throws NoSuchPaddingException, NoSuchAlgorithmException{
 
         Security.addProvider(new BouncyCastleProvider());
 
@@ -49,7 +49,7 @@ public class StatusService {
 
     public String signVerify(Long signId, PublicKey pub) throws GeneralSecurityException {
         ConsentStatus cs = statusRepository.findBySignId(signId);
-        String status = cs.isConsent();
+        String status = cs.getIsConsent();
         String item = cs.getFormId().getConsentItem();
         String message = status+item;
         byte[] signature = cs.getSignature();
@@ -67,5 +67,5 @@ public class StatusService {
         sig.initVerify(pub);
         sig.update(message);
         return sig.verify(signature);
-    }
+    }*/
 }
