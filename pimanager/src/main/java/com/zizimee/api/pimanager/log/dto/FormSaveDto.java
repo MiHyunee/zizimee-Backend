@@ -7,14 +7,8 @@ import lombok.Getter;
 
 @Getter
 public class FormSaveDto {
-    private String consentItem;
 
-    @Builder
-    public FormSaveDto(String consentItem){
-        this.consentItem = consentItem;
-    }
-
-    public ConsentForm toEntity(Enterprise enterpriseId){
+    public ConsentForm toEntity(String consentItem, Enterprise enterpriseId){
         return ConsentForm.builder()
                 .consentItem(consentItem)
                 .enterpriseId(enterpriseId)

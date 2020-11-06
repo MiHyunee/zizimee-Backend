@@ -36,7 +36,7 @@ public class FormService {
     @Transactional
     public Long save(byte[] encodedItem) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         //String jwt = request.getHeader(JwtTokenProvider.HEADER_NAME);
-        Enterprise enterpriseId = ;
+        Enterprise entId = ;
         //privateKey 읽어오기
         File privateKeyFile = new File("src/main/resources/private.key");
         PrivateKey privateKey = null;
@@ -48,7 +48,8 @@ public class FormService {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
         String content = byteToString(cipher.doFinal(encodedItem));
-        return formRepository.save(content).getId();
+        FormSaveDto requestDto = new FormSaveDto();
+        return formRepository.save(requestDto.toEntity(content, entId)).getId();
     }
 
     //@Transactional
