@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 public class NoticeUpdateRequestDto {
     private String title;
     private String content;
-    private String type;
 
     @Builder
-    public NoticeUpdateRequestDto(String title, String content, String type){
+    public NoticeUpdateRequestDto(String title, String content){
         this.title = title;
         this.content = content;
-        this.type = type;
     }
 }

@@ -25,7 +25,6 @@ public class RequestService {
 
     @Transactional
     public Long save(RequestSaveDto requestDto, User user){
-        Enterprise entId = enterpriseRepository.findByName(requestDto.getName());
         return requestRepository.save(requestDto.toEntity(entId, user)).getId();
     }
     @Transactional
@@ -33,7 +32,7 @@ public class RequestService {
         Request request = requestRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
         Enterprise entId = enterpriseRepository.findByName(requestDto.getName());
-        request.update(requestDto.getType(), requestDto.getContent(), requestDto.getStartDate(),requestDto.getEndDate(), entId);
+        request.update(requestDto.getContent(), requestDto.getStartDate(),requestDto.getEndDate(), entId);
     }
 
     @Transactional(readOnly=true)

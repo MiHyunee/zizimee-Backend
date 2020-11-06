@@ -11,15 +11,13 @@ public class NoticeResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String type;
     private LocalDate updateDate;
 
     public NoticeResponseDto(Notice entity){
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.type = entity.getType();
-        this.updateDate = entity.getUpdateDate;
+        this.updateDate = entity.getUpdateDate();
     }
 
     @Builder
