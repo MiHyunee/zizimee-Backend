@@ -34,28 +34,24 @@ public class Request extends BaseTimeEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    @Enumerated(EnumType.STRING)
-    private RequestType type;
-
     @Column(length = 500)
     private String content;
 
     @Builder
-    public Request(User userId, Enterprise enterpriseId, LocalDate startDate, LocalDate endDate, RequestType type, String content){
+    public Request(User userId, Enterprise enterpriseId, LocalDate startDate, LocalDate endDate, String content){
         this.userId = userId;
         this.enterpriseId = enterpriseId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.type = type;
         this.content = content;
     }
 
-    public void update(RequestType type, String content, LocalDate startDate, LocalDate endDate, Enterprise enterpriseId){
+    public void update(String content, LocalDate startDate, LocalDate endDate, Enterprise enterpriseId){
         this.startDate = startDate;
         this.endDate = endDate;
-        this.type = type;
         this.content = content;
         this.enterpriseId = enterpriseId;
     }
+
 
 }

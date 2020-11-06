@@ -2,8 +2,6 @@ package com.zizimee.api.pimanager.request.dto;
 
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.request.entity.Request;
-import com.zizimee.api.pimanager.request.entity.RequestType;
-import com.zizimee.api.pimanager.request.entity.RequestType;
 import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Getter;
 import lombok.Builder;
@@ -17,7 +15,6 @@ public class RequestResponseDto {
     private Enterprise enterpriseId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private RequestType type;
     private String content;
     private LocalDate updateDate;
 
@@ -27,7 +24,6 @@ public class RequestResponseDto {
         this.enterpriseId = entity.getEnterpriseId();
         this.startDate = entity.getStartDate();
         this.endDate = entity.getEndDate();
-        this.type = entity.getType();
         this.content = entity.getContent();
         this.updateDate = entity.getUpdateDate();
     }
@@ -36,4 +32,5 @@ public class RequestResponseDto {
     public RequestResponseDto(Long id){
         this.id = id;
     }
+
 }
