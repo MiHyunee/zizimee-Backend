@@ -27,7 +27,7 @@ public class NoticeService {
     public void update(Long id, NoticeUpdateRequestDto requestDto ){
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        notice.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getType());
+        notice.update(requestDto.getTitle(), requestDto.getContent());
     }
 
     @Transactional
