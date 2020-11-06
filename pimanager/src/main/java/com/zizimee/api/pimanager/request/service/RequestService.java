@@ -25,7 +25,7 @@ public class RequestService {
 
     @Transactional
     public Long save(RequestSaveDto requestDto, User user){
-        return requestRepository.save(requestDto.toEntity(entId, user)).getId();
+        return requestRepository.save(requestDto.toEntity(user)).getId();
     }
     @Transactional
     public void update(Long id, RequestUpdateDto requestDto ){
