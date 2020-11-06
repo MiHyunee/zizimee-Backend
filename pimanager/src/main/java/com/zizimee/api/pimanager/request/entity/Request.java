@@ -2,6 +2,7 @@ package com.zizimee.api.pimanager.request.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.notice.entity.BaseTimeEntity;
 import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,43 +14,44 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Request {
+public class Request extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "User_id")
     private User userId;
 
     @ManyToOne
-    @JoinColumn(name = "ENTERPRISE_ID")
+    @JoinColumn(name = "Enterprise_id")
     private Enterprise enterpriseId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate requestDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
 
-    @Enumerated(EnumType.STRING)
-    private RequestType type;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
 
-    @Lob
+    @Column(length = 500)
     private String content;
 
     @Builder
-    public Request(User userId, Enterprise enterpriseId, LocalDate requestDate, RequestType type, String content){
+    public Request(User userId, Enterprise enterpriseId, LocalDate startDate, LocalDate endDate, String content){
         this.userId = userId;
         this.enterpriseId = enterpriseId;
-        this.requestDate = requestDate;
-        this.type = type;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.content = content;
     }
 
-    public void update(RequestType type, String content, LocalDate requestDate, Enterprise enterpriseId){
-        this.requestDate = requestDate;
-        this.type = type;
+    public void update(String content, LocalDate startDate, LocalDate endDate, Enterprise enterpriseId){
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.content = content;
         this.enterpriseId = enterpriseId;
     }
+
 
 }
