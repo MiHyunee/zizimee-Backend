@@ -21,19 +21,14 @@ public class Notice extends BaseTimeEntity{
     @Lob
     private String content;
 
-    @Column(nullable = false)
-    private String type;
-
     @Builder
-    public Notice(String title, String content, String type){
+    public Notice(String title, String content){
         this.title = title;
         this.content = content;
-        this.type = type;
     }
 
-    public void update(String title, String content, String type){
+    public void update(String title, String content){
         this.title = title;
         this.content = content;
-        this.type = type;
     }
 }

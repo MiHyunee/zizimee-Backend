@@ -91,6 +91,7 @@ local.properties
 /build/
 .idea
 application-oauth.properties
+*.json
 
 
 # Ignore Gradle GUI config
