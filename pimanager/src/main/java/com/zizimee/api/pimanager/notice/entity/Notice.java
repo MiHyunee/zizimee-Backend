@@ -1,5 +1,6 @@
 package com.zizimee.api.pimanager.notice.entity;
 
+import com.zizimee.api.pimanager.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Notice extends BaseTimeEntity{
+public class Notice extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

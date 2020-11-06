@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,9 +25,9 @@ public class JwtTokenProvider {
     //토큰 유효시간 30일
     private long tokenValidTime = 30 * 24 * 60 * 60 * 1000L;
 
-    public static final String HEADER_NAME = "PI-TOKEN";
+    public static final String HEADER_NAME = "Authorization";
 
-    @Autowired
+    @Qualifier("EnterpriseService")
     private UserDetailsService userDetailsService;
 
 
@@ -35,7 +35,9 @@ public class JwtTokenProvider {
     //secretKey를 Base64로 인코딩
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+
+        secretKey = Base64.getEncoder()
+                .encodeToString(secretKey.getBytes());
     }
 
     //라이브러리로 jwt 토큰 생성
@@ -75,9 +77,7 @@ public class JwtTokenProvider {
     }
 
     //Header에서 토큰 값 가져오기 (HEADER_NAME : "TOKEN값")
-    public String getTokenFromHeader(HttpServletRequest request) {
-        return request.getHeader(HEADER_NAME);
-    }
+    public String getTokenFromHeader(HttpServletRequest request) { return request.getHeader(HEADER_NAME); }
 
     //토큰 유효성 + 만료일자 확인
     public boolean validateToken(String token) {

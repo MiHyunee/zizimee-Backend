@@ -1,9 +1,8 @@
 package com.zizimee.api.pimanager.user.web;
 
-import com.zizimee.api.pimanager.user.dto.RequestJwtAuthenticationDto;
+import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
 import com.zizimee.api.pimanager.user.dto.RequestSignUpDto;
 import com.zizimee.api.pimanager.user.dto.ResponseSignUpDto;
-import com.zizimee.api.pimanager.user.entity.UserRepository;
 import com.zizimee.api.pimanager.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RequiredArgsConstructor
 @RequestMapping("/user")
 @RestController
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @PostMapping("/login")
@@ -31,9 +31,10 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<ResponseSignUpDto> loginByToken(@RequestBody RequestJwtAuthenticationDto request){
+    public ResponseEntity<ResponseSignUpDto> loginByToken(HttpServletRequest request){
         try {
-            return userService.loginByToken(request.getToken());
+            String token = request.getHeader(JwtTokenProvider.HEADER_NAME);
+            return userService.loginByToken(token);
         } catch (Exception e) {
             return (ResponseEntity<ResponseSignUpDto>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
