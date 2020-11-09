@@ -3,7 +3,6 @@ package com.zizimee.api.pimanager.request.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zizimee.api.pimanager.BaseTimeEntity;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
-import com.zizimee.api.pimanager.notice.entity.BaseTimeEntity;
 import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +37,10 @@ public class Request extends BaseTimeEntity {
     @Column(length = 500)
     private String content;
 
+    @OneToOne
+    @JoinColumn(name="request_id")
+    private Response response;
+
     @Builder
     public Request(User userId, Enterprise enterpriseId, LocalDate startDate, LocalDate endDate, String content){
         this.userId = userId;
@@ -46,13 +49,4 @@ public class Request extends BaseTimeEntity {
         this.endDate = endDate;
         this.content = content;
     }
-
-    public void update(String content, LocalDate startDate, LocalDate endDate, Enterprise enterpriseId){
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.content = content;
-        this.enterpriseId = enterpriseId;
-    }
-
-
 }

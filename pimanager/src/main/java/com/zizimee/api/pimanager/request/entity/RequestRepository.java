@@ -8,12 +8,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long>{
-    @Query("SELECT p FROM Request p ORDER BY p.id DESC")
-    List<Request> findAllDesc();
+    @Query("SELECT r " +
+            "FROM Request r " +
+            "ORDER BY r.id DESC")
+    List<Request> findAllDescByUser(long userId);
 
     @Query(nativeQuery = true,
             value = "select r.CONTENT from Request r WHERE ENTERPRISE_ID = ?1 AND (r.START_DATE BETWEEN ?2 AND ?3)")
     List<String> getContents(Long enterprise_id, LocalDate begin, LocalDate end);
 
-    Long countByEnterpriseIdAndTypeAndStartDateBetween(Enterprise enterprise, LocalDate begin, LocalDate end);
+    Long countByEnterpriseIdAndStartDateBetween(Enterprise enterprise, LocalDate begin, LocalDate end);
 }

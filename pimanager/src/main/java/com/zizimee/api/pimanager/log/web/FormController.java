@@ -26,10 +26,9 @@ public class FormController {
     }
 
     @PostMapping("/form")
-    public ResponseEntity update(@RequestBody byte[] form, Long id) throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
+    public ResponseEntity update(@RequestBody byte[] form, Long id) throws Exception {
         formService.update(form, id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(FormResponseDto.builder().id(id).build());
     }
-
 }

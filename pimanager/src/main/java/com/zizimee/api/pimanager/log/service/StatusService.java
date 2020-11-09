@@ -5,7 +5,6 @@ import com.zizimee.api.pimanager.log.dto.StatusSaveDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentStatus;
 import com.zizimee.api.pimanager.log.entity.FormRepository;
-import com.zizimee.api.pimanager.log.entity.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +18,12 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDate;
+import com.zizimee.api.pimanager.log.entity.ConsentStatusRepository;
 
 @RequiredArgsConstructor
 @Service
 public class StatusService {
-    private final StatusRepository statusRepository;
+    private final ConsentStatusRepository statusRepository;
     private final FormRepository formRepository;
 
     @Transactional

@@ -9,14 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 @RequiredArgsConstructor
@@ -56,7 +51,9 @@ public class FormService {
     }
 
     @Transactional
-    public void update(byte[] encodedItem, Long id) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public void update(byte[] encodedItem, Long id) throws Exception {
+        //String jwt = request.getHeader(JwtTokenProvider.HEADER_NAME);
+        Enterprise enterpriseId = ;
         //privateKey 읽어오기
         ConsentForm consentForm = formRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
