@@ -25,7 +25,7 @@ public class FormService {
     private final FormRepository formRepository;
 
     @Transactional
-    public FormResponseDto save() throws NoSuchAlgorithmException, IOException {
+    public PublicKey save() throws NoSuchAlgorithmException, IOException {
         //키쌍생성
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
@@ -52,7 +52,7 @@ public class FormService {
         privateFos.write(privKey.getEncoded());
         privateFos.close();
 
-        return new FormResponseDto(formId,pubKey);
+        return pubKey;
     }
 
     @Transactional
