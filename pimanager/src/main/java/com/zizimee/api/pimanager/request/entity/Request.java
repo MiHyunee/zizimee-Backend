@@ -3,6 +3,7 @@ package com.zizimee.api.pimanager.request.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zizimee.api.pimanager.BaseTimeEntity;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.notice.entity.BaseTimeEntity;
 import com.zizimee.api.pimanager.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,5 +53,6 @@ public class Request extends BaseTimeEntity {
         this.content = content;
         this.enterpriseId = enterpriseId;
     }
+
 
 }
