@@ -14,5 +14,5 @@ public interface RequestRepository extends JpaRepository<Request, Long>{
             value = "select r.CONTENT from Request r WHERE ENTERPRISE_ID = ?1 AND (r.START_DATE BETWEEN ?2 AND ?3)")
     List<String> getContents(Long enterprise_id, LocalDate begin, LocalDate end);
 
-    Long countByEnterpriseIdAndTypeAndStartDateBetween(Enterprise enterprise, String type, LocalDate begin, LocalDate end);
+    Long countByEnterpriseIdAndTypeAndStartDateBetween(Enterprise enterprise, LocalDate begin, LocalDate end);
 }

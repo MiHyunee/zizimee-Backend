@@ -4,6 +4,7 @@ import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 import javax.persistence.*;
 
@@ -23,15 +24,17 @@ public class ConsentForm {
     @Lob
     private String consentItem;
 
+    @Column
+    private LocalDate date;
+
     @Builder
-    public ConsentForm (Long id, Enterprise enterpriseId, String consentItem){
+    public ConsentForm (Long id, Enterprise enterpriseId, String consentItem, LocalDate date){
         this.id = id;
         this.enterpriseId = enterpriseId;
         this.consentItem = consentItem;
+        this.date = date;
     }
-    public void update (Long id, Enterprise enterpriseId, String consentItem) {
-        this.id = id;
-        this.enterpriseId = enterpriseId;
+    public void update (String consentItem) {
         this.consentItem = consentItem;
     }
 }

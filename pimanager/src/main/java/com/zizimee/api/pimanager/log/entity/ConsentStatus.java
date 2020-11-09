@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -33,15 +34,17 @@ public class ConsentStatus {
     @Column
     private byte[] signature;
 
+    @Column
+    private LocalDate date;
+
     @Builder
-    public ConsentStatus(Long id, ConsentForm formId, EntLinkage linkId, String isConsent, Long signId, byte[] signature){
+    public ConsentStatus(Long id, ConsentForm formId, EntLinkage linkId, String isConsent, Long signId, byte[] signature, LocalDate date){
         this.id = id;
         this.formId = formId;
         this.linkId = linkId;
         this.isConsent = isConsent;
         this.signId = signId;
         this.signature = signature;
+        this.date = date;
     }
-
-
 }

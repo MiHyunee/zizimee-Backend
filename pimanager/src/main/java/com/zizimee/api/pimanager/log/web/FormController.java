@@ -1,7 +1,6 @@
 package com.zizimee.api.pimanager.log.web;
 
 import com.zizimee.api.pimanager.log.dto.FormResponseDto;
-import com.zizimee.api.pimanager.log.dto.FormSaveDto;
 import com.zizimee.api.pimanager.log.service.FormService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 
 @RequiredArgsConstructor
@@ -22,24 +20,16 @@ import java.security.spec.InvalidKeySpecException;
 public class FormController {
     private final FormService formService;
 
-    @PostMapping("/form")
-    public ResponseEntity save(@RequestBody byte[] encodedItem) throws NoSuchAlgorithmException, IOException, NoSuchProviderException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
-        Long id = formService.save(encodedItem);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(FormResponseDto.builder().id(id).build());
+    @PostMapping("/keyPair")
+    public FormResponseDto save() throws IOException, NoSuchAlgorithmException {
+        return formService.save();
     }
 
-    /*@PutMapping("/log/{id}")
-    public ResponseEntity update(@PathVariable Long id,
-                                 @RequestBody LogUpdateDto requestDto){
-        logService.update(id, requestDto);
-
+    @PostMapping("/form")
+    public ResponseEntity update(@RequestBody byte[] form, Long id) throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
+        formService.update(form, id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(LogResponseDto.builder()
-                        .id(id)
-                        .build());
-    }*/
-
-
+                .body(FormResponseDto.builder().id(id).build());
+    }
 
 }

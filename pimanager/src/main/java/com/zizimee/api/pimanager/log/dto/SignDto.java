@@ -5,10 +5,11 @@ import lombok.Getter;
 
 import java.security.PublicKey;
 
+
 @Getter
 public class SignDto {
-    Long signId;
-    PublicKey pub;
+    private Long signId;
+    private PublicKey pub;
 
     @Builder
     public SignDto(Long signId, PublicKey pub){

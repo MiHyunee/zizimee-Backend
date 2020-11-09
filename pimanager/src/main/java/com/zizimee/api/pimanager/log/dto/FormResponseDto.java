@@ -1,20 +1,18 @@
 package com.zizimee.api.pimanager.log.dto;
 
-import com.zizimee.api.pimanager.log.entity.ConsentForm;
-import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.security.PublicKey;
 
 @Getter
 public class FormResponseDto {
     private Long id;
-    private Enterprise enterpriseId;
-    private String consentItem;
+    private PublicKey publicKey;
 
-    public FormResponseDto(ConsentForm entity){
-        this.id = entity.getId();
-        this.enterpriseId = entity.getEnterpriseId();
-        this.consentItem = entity.getConsentItem();
+    public FormResponseDto(Long id, PublicKey publicKey){
+        this.id = id;
+        this.publicKey = publicKey;
     }
 
     @Builder

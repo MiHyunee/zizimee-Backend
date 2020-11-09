@@ -1,60 +1,65 @@
 package com.zizimee.api.pimanager.log.service;
 
+import com.zizimee.api.pimanager.log.dto.SignDto;
 import com.zizimee.api.pimanager.log.dto.StatusSaveDto;
+import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentStatus;
+import com.zizimee.api.pimanager.log.entity.FormRepository;
 import com.zizimee.api.pimanager.log.entity.StatusRepository;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.LocalDate;
 
+@RequiredArgsConstructor
+@Service
 public class StatusService {
-    private StatusRepository statusRepository;
+    private final StatusRepository statusRepository;
+    private final FormRepository formRepository;
 
-
-    /*public Long save(StatusSaveDto requestDto) throws NoSuchPaddingException, NoSuchAlgorithmException{
-
-        Security.addProvider(new BouncyCastleProvider());
-
-
-
-        File privKeyFile = new File("/resources/private.key");
-        PrivateKey privateKey = null;
-
-        //파일에서 priv키 읽어오기
-        Path privKeyFile = Paths.get("src/main/resources/PEM");
-
-
-        FileInputStream privateFis = new FileInputSteam(privKeyFile);
-        FileInputStream cipher = Cipher.getInstance("RSA");
-        ByteArrayOutputStream privKeyBaos = new ByteArrayInputStream();
+    @Transactional
+    public Long save(byte[] isConsent, Long signId, byte[] signature, LocalDate date) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        //privateKey 읽어오기
+        ConsentForm formId = formRepository.findRecent();
+        Long entId = formId.getEnterpriseId().getId();
+        FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");
+        ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
         int curByte1 = 0;
-        while((curByte1 = privateFis.read()) != -1){
+        while ((curByte1 = privateFis.read()) != -1) {
             privKeyBaos.write(curByte1);
         }
         PKCS8EncodedKeySpec privKeySpec
                 = new PKCS8EncodedKeySpec(privKeyBaos.toByteArray());
         privKeyBaos.close();
-
-        return  statusRepository.save(requestDto.toEntity()).getId();
+        KeyFactory fac = KeyFactory.getInstance("RSA");
+        PrivateKey privateKey = fac.generatePrivate(privKeySpec);
+        //복호화
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+        String status = byteToString(cipher.doFinal(isConsent));
+        //저장
+        StatusSaveDto requestDto = new StatusSaveDto(formId, status, signId, signature,date);
+        return statusRepository.save(requestDto.toEntity()).getId();
     }
 
-    public String signVerify(Long signId, PublicKey pub) throws GeneralSecurityException {
-        ConsentStatus cs = statusRepository.findBySignId(signId);
+    @Transactional
+    public String signVerify(SignDto requestDto) throws GeneralSecurityException {
+        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId());
         String status = cs.getIsConsent();
         String item = cs.getFormId().getConsentItem();
         String message = status+item;
         byte[] signature = cs.getSignature();
 
-        boolean verified = verify(pub, signature, message.getBytes());
+        boolean verified = verify(requestDto.getPub(), signature, message.getBytes());
         if(verified)
             return "검증이 완료되었습니다.";
         else
@@ -67,5 +72,21 @@ public class StatusService {
         sig.initVerify(pub);
         sig.update(message);
         return sig.verify(signature);
-    }*/
+    }
+
+    public static String byteToString(byte[] b){
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<b.length; i++)
+            sb.append(byteToBinaryString(b[i]));
+        return sb.toString();
+    }
+
+    public static String byteToBinaryString(byte n){
+        StringBuilder sb = new StringBuilder("00000000");
+        for(int bit=0;bit<8;bit++){
+            if(((n>>bit)&1)>0)
+                sb.setCharAt(7-bit,'1');
+        }
+        return sb.toString();
+    }
 }

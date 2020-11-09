@@ -9,7 +9,7 @@ public class StatusResponseDto {
     private Long id;
     private ConsentForm formId;
     private EntLinkage linkageId;
-    private boolean isConsent;
+    private String isConsent;
     private Long signId;
     private byte[] signature;
 
