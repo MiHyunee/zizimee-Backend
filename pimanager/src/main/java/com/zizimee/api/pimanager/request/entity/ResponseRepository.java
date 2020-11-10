@@ -9,7 +9,7 @@ public interface ResponseRepository extends JpaRepository<Response, Long> {
 
     @Query(nativeQuery = true,
             value = "SELECT * " +
-                    "FROM Response r.User_Id = ?1" +
-                    "WHERE R.Id_Request = ?1 ")
+                    "FROM Response r " +
+                    "WHERE r.Id_Request = ?1 ")
     Optional<Response> findByIdRequest(Long id);
 }

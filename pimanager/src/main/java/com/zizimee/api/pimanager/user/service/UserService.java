@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Optional;
@@ -113,5 +114,11 @@ public class UserService {
         } else {
             throw new Exception("INVALID_TOKEN");
         }
+    }
+
+    @Transactional
+    public ResponseEntity tmp(String userId) {
+        userRepository.save(User.builder().name(userId).uid(userId).build());
+        return ResponseEntity.status(HttpStatus.OK).body(jwtTokenProvider.createToken(userId));
     }
 }

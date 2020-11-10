@@ -1,6 +1,7 @@
 package com.zizimee.api.pimanager.user.web;
 
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
+import com.zizimee.api.pimanager.enterprise.dto.RequestSignInDto;
 import com.zizimee.api.pimanager.user.dto.RequestSignUpDto;
 import com.zizimee.api.pimanager.user.dto.ResponseSignUpDto;
 import com.zizimee.api.pimanager.user.service.UserService;
@@ -40,4 +41,8 @@ public class UserController {
         }
     }
 
+    @PostMapping("/tmp")
+    public ResponseEntity makeJwt(@RequestBody RequestSignUpDto request) {
+        return userService.tmp(request.getIdToken());
+    }
 }

@@ -23,13 +23,13 @@ public class ResponseService {
     private final ConsentStatusRepository consentStatusRepository;
     private final ConsentFormRepository consentFormRepository;
 
-    @Transactional
     public void save(Request request) throws Throwable {
         String content;
         HashMap<String, Character[]> form;
 
-        ConsentStatus beforeConsentStatus = consentStatusRepository.findByDate(request.getStartDate());
-        ConsentStatus afterConsentStatus = consentStatusRepository.findByDate(request.getEndDate());
+        System.out.println(request.getStartDate());
+        ConsentStatus beforeConsentStatus = consentStatusRepository.findByDate(request.getStartDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));
+        ConsentStatus afterConsentStatus = consentStatusRepository.findByDate(request.getEndDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));
         Long consentFormId = beforeConsentStatus.getFormId().getId();
         ConsentForm consentForm = (ConsentForm)consentFormRepository.findById(consentFormId).orElseThrow(()-> new IllegalArgumentException("form이 없습니다"));
         if (isSameConsentStatus(beforeConsentStatus.getId(), afterConsentStatus.getId())) {

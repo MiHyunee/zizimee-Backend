@@ -1,6 +1,8 @@
 package com.zizimee.api.pimanager.request.service;
 
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
+import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import com.zizimee.api.pimanager.request.dto.RequestResponseDto;
 import com.zizimee.api.pimanager.request.dto.RequestSaveDto;
 import com.zizimee.api.pimanager.request.entity.Request;
@@ -23,12 +25,15 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final ResponseService responseService;
     private final UserRepository userRepository;
+    private final EnterpriseRepository enterpriseRepository;
 
     @Transactional
     public void save(RequestSaveDto requestDto, String token) throws Throwable {
-        User user = userRepository.findById(Long.valueOf(jwtTokenProvider.getUserId(token)))
+        User user = userRepository.findByUid(jwtTokenProvider.getUserId(token))
                 .orElseThrow(()-> new IllegalArgumentException("token의 userId가 없습니다."));
-        Request request = requestRepository.save(requestDto.toEntity(user));
+        Enterprise enterprise = enterpriseRepository.findById(requestDto.getEnterpriseId())
+                .orElseThrow(()-> new IllegalArgumentException("기업이 없습니다"));
+        Request request = requestRepository.save(requestDto.toEntity(user, enterprise));
         responseService.save(request);
     }
 
@@ -38,7 +43,7 @@ public class RequestService {
         Request request;
         Response response;
 
-        User user = userRepository.findById(Long.valueOf(jwtTokenProvider.getUserId(token)))
+        User user = userRepository.findByUid(jwtTokenProvider.getUserId(token))
                 .orElseThrow(()-> new IllegalArgumentException("token의 userId가 없습니다."));
         Long userId = user.getId();
         List<Request> requestList = requestRepository.findAllDescByUser(userId);

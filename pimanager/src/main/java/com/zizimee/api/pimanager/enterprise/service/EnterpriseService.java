@@ -50,6 +50,7 @@ public class EnterpriseService implements UserDetailsService {
         }
     }
 
+    @Transactional(readOnly = true)
     public ResponseEnterpriseDto loginByOauth(RequestSignInDto requestSignInDto) throws Exception {
         Enterprise enterprise = enterpriseRepository.findBySignUpId(requestSignInDto.getSignUpId()).orElseThrow(()-> new IllegalArgumentException("해당 아이다가 없습니다."));
         if(enterprise==null) {

@@ -11,10 +11,10 @@ public interface ConsentStatusRepository extends JpaRepository<ConsentStatus, Lo
 
     @Query(nativeQuery = true,
             value = "SELECT * " +
-            "FROM consentStatus c " +
-            "ORDER BY ABS(DATEDIFF(date, c.date)) " +
+            "FROM Consent_Status " +
+            "ORDER BY ABS(DATEDIFF(day, ?1, date)) " +
             "LIMIT 1")
-    ConsentStatus findByDate(LocalDate date);
+    Optional<ConsentStatus> findByDate(LocalDate date);
 
-    ConsentStatus findBySignId(Long signId);
+    Optional<ConsentStatus> findBySignId(Long signId);
 }

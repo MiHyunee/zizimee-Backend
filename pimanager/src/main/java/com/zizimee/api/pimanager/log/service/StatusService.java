@@ -56,7 +56,7 @@ public class StatusService {
 
     @Transactional
     public String signVerify(SignDto requestDto) throws GeneralSecurityException {
-        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId());
+        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId()).orElseThrow(()-> new IllegalArgumentException("동의 여부 상태 정보가 없습니다"));
         String status = cs.getIsConsent();
         String item = cs.getFormId().getConsentItem();
         String message = status+item;
