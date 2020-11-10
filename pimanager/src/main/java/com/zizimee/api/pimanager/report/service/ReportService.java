@@ -24,8 +24,6 @@ public class ReportService {
     private final EnterpriseRepository enterpriseRepository;
     private final Analysis analysis;
 
-    private final String REQ_TYPE = "REMOVE";
-
     @Transactional
     public AnalysisDto save(ReportSaveRequestDto requestDto){
         reportRepository.save(requestDto.toEntity(enterpriseRepository.getOne(requestDto.getIdEnterprise())));

@@ -35,7 +35,9 @@ public class JwtTokenProvider {
     //secretKey를 Base64로 인코딩
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+
+        secretKey = Base64.getEncoder()
+                .encodeToString(secretKey.getBytes());
     }
 
     //라이브러리로 jwt 토큰 생성
@@ -75,9 +77,7 @@ public class JwtTokenProvider {
     }
 
     //Header에서 토큰 값 가져오기 (HEADER_NAME : "TOKEN값")
-    public String getTokenFromHeader(HttpServletRequest request) {
-        return request.getHeader(HEADER_NAME);
-    }
+    public String getTokenFromHeader(HttpServletRequest request) { return request.getHeader(HEADER_NAME); }
 
     //토큰 유효성 + 만료일자 확인
     public boolean validateToken(String token) {
