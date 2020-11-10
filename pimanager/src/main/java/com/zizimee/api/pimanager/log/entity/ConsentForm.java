@@ -27,12 +27,9 @@ public class ConsentForm {
     @Column
     private LocalDate date;
 
-    @Builder
-    public ConsentForm (Long id, Enterprise enterpriseId, String consentItem, LocalDate date){
-        this.id = id;
+    public ConsentForm (Enterprise enterpriseId){
         this.enterpriseId = enterpriseId;
-        this.consentItem = consentItem;
-        this.date = date;
+        this.date = LocalDate.now();
     }
     public void update (String consentItem) {
         this.consentItem = consentItem;

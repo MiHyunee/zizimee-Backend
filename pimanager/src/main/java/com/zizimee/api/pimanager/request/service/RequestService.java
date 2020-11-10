@@ -6,6 +6,7 @@ import com.zizimee.api.pimanager.request.dto.RequestSaveDto;
 import com.zizimee.api.pimanager.request.entity.Request;
 import com.zizimee.api.pimanager.request.entity.RequestRepository;
 import com.zizimee.api.pimanager.request.entity.Response;
+import com.zizimee.api.pimanager.request.entity.ResponseRepository;
 import com.zizimee.api.pimanager.user.entity.User;
 import com.zizimee.api.pimanager.user.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class RequestService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void save(RequestSaveDto requestDto, String token){
+    public void save(RequestSaveDto requestDto, String token) throws Throwable {
         User user = userRepository.findById(Long.valueOf(jwtTokenProvider.getUserId(token)))
                 .orElseThrow(()-> new IllegalArgumentException("token의 userId가 없습니다."));
         Request request = requestRepository.save(requestDto.toEntity(user));
@@ -43,7 +44,7 @@ public class RequestService {
         List<Request> requestList = requestRepository.findAllDescByUser(userId);
         for(int i=0; i<requestList.size(); i++) {
             request = requestList.get(i);
-            response = request.getResponse();
+            response = responseService.findByRequestId(request.getId());
             requestResponseDtoList.add(RequestResponseDto.builder().
                     request(request)
                     .response(response)

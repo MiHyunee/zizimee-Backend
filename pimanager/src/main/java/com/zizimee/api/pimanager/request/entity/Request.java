@@ -37,10 +37,6 @@ public class Request extends BaseTimeEntity {
     @Column(length = 500)
     private String content;
 
-    @OneToOne
-    @JoinColumn(name="request_id")
-    private Response response;
-
     @Builder
     public Request(User userId, Enterprise enterpriseId, LocalDate startDate, LocalDate endDate, String content){
         this.userId = userId;

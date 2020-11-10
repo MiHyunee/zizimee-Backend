@@ -24,18 +24,21 @@ public class ResponseService {
     private final ConsentFormRepository consentFormRepository;
 
     @Transactional
-    public void save(Request request) {
+    public void save(Request request) throws Throwable {
         String content;
         HashMap<String, Character[]> form;
 
         ConsentStatus beforeConsentStatus = consentStatusRepository.findByDate(request.getStartDate());
         ConsentStatus afterConsentStatus = consentStatusRepository.findByDate(request.getEndDate());
-        ConsentForm consentForm = consentFormRepository.findByFormId(beforeConsentStatus.getFormId());
+        Long consentFormId = beforeConsentStatus.getFormId().getId();
+        ConsentForm consentForm = (ConsentForm)consentFormRepository.findById(consentFormId).orElseThrow(()-> new IllegalArgumentException("form이 없습니다"));
         if (isSameConsentStatus(beforeConsentStatus.getId(), afterConsentStatus.getId())) {
             form = makeForm(consentForm, beforeConsentStatus);
             content = "변동 없음\n";
         } else {
-            form = makeForm(consentForm, beforeConsentStatus, afterConsentStatus);
+            if(consentForm.getId() == consentForm.getId()) {
+                form = makeForm(consentForm, beforeConsentStatus, afterConsentStatus);
+            }
             content = "변동 있음\n";
         }
 
@@ -103,4 +106,8 @@ public class ResponseService {
         return itemList;
     }
 
+    @Transactional(readOnly = true)
+    public Response findByRequestId(Long id) {
+        return responseRepository.findByIdRequest(id).orElseThrow(()-> new IllegalArgumentException("해당 요청에 대한 응답이 없습니다."));
+    }
 }

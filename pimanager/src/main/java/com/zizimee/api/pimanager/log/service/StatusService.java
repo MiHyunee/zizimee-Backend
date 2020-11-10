@@ -1,36 +1,34 @@
 package com.zizimee.api.pimanager.log.service;
 
+import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.log.dto.SignDto;
-import com.zizimee.api.pimanager.log.dto.StatusSaveDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
+import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
 import com.zizimee.api.pimanager.log.entity.ConsentStatus;
-import com.zizimee.api.pimanager.log.entity.FormRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDate;
 import com.zizimee.api.pimanager.log.entity.ConsentStatusRepository;
 
 @RequiredArgsConstructor
 @Service
 public class StatusService {
     private final ConsentStatusRepository statusRepository;
-    private final FormRepository formRepository;
+    private final ConsentFormRepository formRepository;
 
     @Transactional
-    public Long save(byte[] isConsent, Long signId, byte[] signature, LocalDate date) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        //privateKey 읽어오기
-        ConsentForm formId = formRepository.findRecent();
-        Long entId = formId.getEnterpriseId().getId();
+    public void save(byte[] isConsent, Long signId, byte[] signature) throws Throwable {
+        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Enterprise enterprise =(Enterprise)principle;
+        Long entId = enterprise.getId();
+        ConsentForm form = (ConsentForm)formRepository.findRecentByEntId(entId)
+                .orElseThrow(()->new IllegalArgumentException("해당 기업의 form 없습니다"));
         FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
         int curByte1 = 0;
@@ -47,8 +45,13 @@ public class StatusService {
         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
         String status = byteToString(cipher.doFinal(isConsent));
         //저장
-        StatusSaveDto requestDto = new StatusSaveDto(formId, status, signId, signature,date);
-        return statusRepository.save(requestDto.toEntity()).getId();
+        ConsentStatus consentStatus = ConsentStatus.builder()
+                .formId(form)
+                .signId(signId)
+                .signature(signature)
+                .isConsent(status)
+                .build();
+        statusRepository.save(consentStatus);
     }
 
     @Transactional
