@@ -7,8 +7,6 @@ import com.zizimee.api.pimanager.request.dto.RequestResponseDto;
 import com.zizimee.api.pimanager.request.dto.RequestSaveDto;
 import com.zizimee.api.pimanager.request.entity.Request;
 import com.zizimee.api.pimanager.request.entity.RequestRepository;
-import com.zizimee.api.pimanager.request.entity.Response;
-import com.zizimee.api.pimanager.request.entity.ResponseRepository;
 import com.zizimee.api.pimanager.user.entity.User;
 import com.zizimee.api.pimanager.user.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,7 +40,6 @@ public class RequestService {
     public List<RequestResponseDto> findAllRequestResponseDesc(String token) {
         List<RequestResponseDto> requestResponseDtoList = new ArrayList<>();
         Request request;
-        Response response;
 
         User user = userRepository.findByUid(jwtTokenProvider.getUserId(token))
                 .orElseThrow(()-> new IllegalArgumentException("token의 userId가 없습니다."));
@@ -49,11 +47,15 @@ public class RequestService {
         List<Request> requestList = requestRepository.findAllDescByUser(userId);
         for(int i=0; i<requestList.size(); i++) {
             request = requestList.get(i);
-            response = responseService.findByRequestId(request.getId());
-            requestResponseDtoList.add(RequestResponseDto.builder().
-                    request(request)
-                    .response(response)
-                    .build());
+            HashMap<String, Character[]> form = responseService.getForm(request);
+
+            RequestResponseDto dto = RequestResponseDto.builder()
+                    .entName(request.getEnterpriseId().getName())
+                    .startDate(request.getStartDate())
+                    .endDate(request.getEndDate())
+                    .form(form)
+                    .build();
+            requestResponseDtoList.add(dto);
         }
         return requestResponseDtoList;
     }

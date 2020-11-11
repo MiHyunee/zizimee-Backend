@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ConsentFormRepository extends JpaRepository<ConsentForm, Long> {
 
-    Optional findById(Long formId);
+    Optional<ConsentForm> findById(Long formId);
 
     @Query(nativeQuery = true,
             value = "SELECT * " +

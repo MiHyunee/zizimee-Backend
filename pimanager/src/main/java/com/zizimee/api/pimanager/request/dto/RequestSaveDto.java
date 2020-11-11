@@ -3,7 +3,6 @@ package com.zizimee.api.pimanager.request.dto;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.request.entity.Request;
 import com.zizimee.api.pimanager.user.entity.User;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
