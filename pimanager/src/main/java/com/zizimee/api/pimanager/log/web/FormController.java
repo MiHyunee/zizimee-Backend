@@ -21,10 +21,9 @@ public class FormController {
     }
 
     @PutMapping("/form")
-    public ResponseEntity update(@RequestBody byte[] form, Long id) throws Exception{
-        formService.update(form, id);
+    public ResponseEntity update(@RequestBody byte[] form) throws Exception{
+        formService.update(form);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(FormResponseDto.builder().id(id).build());
     }
-
 }

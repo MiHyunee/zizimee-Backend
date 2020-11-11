@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 @Getter
 public class RequestSaveDto {
-
     private String content;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -33,5 +32,6 @@ public class RequestSaveDto {
                 .userId(userId)
                 .build();
     }
+
 
 }

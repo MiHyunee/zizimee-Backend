@@ -5,7 +5,6 @@ import com.zizimee.api.pimanager.log.dto.StatusSaveDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentStatus;
 import com.zizimee.api.pimanager.log.entity.FormRepository;
-import com.zizimee.api.pimanager.log.entity.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,18 +18,19 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDate;
+import com.zizimee.api.pimanager.log.entity.ConsentStatusRepository;
 
 @RequiredArgsConstructor
 @Service
 public class StatusService {
-    private final StatusRepository statusRepository;
+    private final ConsentStatusRepository statusRepository;
     private final FormRepository formRepository;
 
     @Transactional
     public Long save(byte[] isConsent, Long signId, byte[] signature, LocalDate date) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         //privateKey 읽어오기
-        ConsentForm formId = formRepository.findRecent();
-        Long entId = formId.getEnterpriseId().getId();
+        Long entId = "";
+        ConsentForm formId = formRepository.findByEnterpriseId(entId).findRecent(entId);
         FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
         int curByte1 = 0;

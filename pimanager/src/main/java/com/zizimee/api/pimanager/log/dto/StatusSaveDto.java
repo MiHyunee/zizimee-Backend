@@ -11,6 +11,7 @@ public class StatusSaveDto {
     private Long signId;
     private byte[] signature;
     private LocalDate date;
+    private User userId;
 
     @Builder
     public StatusSaveDto(ConsentForm formId, String isConsent, Long signId, byte[] signature, LocalDate date){

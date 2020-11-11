@@ -1,59 +1,47 @@
 package com.zizimee.api.pimanager.request.web;
 
+import com.zizimee.api.pimanager.common.util.Pagination;
 import com.zizimee.api.pimanager.request.dto.*;
 import com.zizimee.api.pimanager.request.service.RequestService;
-import com.zizimee.api.pimanager.request.service.ResponseService;
-import com.zizimee.api.pimanager.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import static com.zizimee.api.pimanager.common.jwt.JwtTokenProvider.HEADER_NAME;
 
 @RequiredArgsConstructor
 @RestController
 public class RequestController {
 
     private final RequestService requestService;
-    private final ResponseService responseService;
 
     @PostMapping("/request")
-    public ResponseEntity save(@RequestBody RequestSaveDto requestDto,
-                               @AuthenticationPrincipal User user){
-        Long id = requestService.save(requestDto, user);
+    public ResponseEntity save(HttpServletRequest httpServletRequest, @RequestBody RequestSaveDto requestDto){
+        String token = httpServletRequest.getHeader(HEADER_NAME);
+        requestService.save(requestDto, token);
 
-        ResponseSaveDto responseDto = new ResponseSaveDto();
-        responseService.save(responseDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(RequestResponseDto.builder().id(id).build());
-    }
-
-    @PutMapping("/request/{id}")
-    public ResponseEntity update(@PathVariable Long id,
-                                 @RequestBody RequestUpdateDto requestDto){
-
-        requestService.update(id, requestDto);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(RequestResponseDto.builder()
-                        .id(id)
-                        .build());
-    }
-
-    @GetMapping("/request/{id}")
-    public ResponseEntity<RequestResponseDto> findById(@PathVariable Long id){
-        RequestResponseDto dto = requestService.findById(id);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/request")
-    public ResponseEntity<List<RequestResponseDto>> findAll() {
-        List<RequestResponseDto> requestList = requestService.findAllDesc();
+    public ResponseEntity<Pagination> findAllRequestResponse(HttpServletRequest httpServletRequest,
+                                                                           @RequestParam(defaultValue = "1") int nowPage) {
+        final int requestCountPerPage = 5;
+
+        String token = httpServletRequest.getHeader(HEADER_NAME);
+        List<RequestResponseDto> requestResponseDto = requestService.findAllRequestResponseDesc(token);
+
+        Pagination pagination = Pagination.builder()
+                .listCount(requestResponseDto.size())
+                .countPerPage(requestCountPerPage)
+                .nowPage(nowPage).build();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(requestList);
+                .body(pagination);
     }
+
 }
