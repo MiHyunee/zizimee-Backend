@@ -3,6 +3,7 @@ package com.zizimee.api.pimanager.log.service;
 import com.zizimee.api.pimanager.consentManagement.entity.EntLinkage;
 import com.zizimee.api.pimanager.consentManagement.entity.EntLinkageRepository;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.log.dto.ConsentStatusRequestDto;
 import com.zizimee.api.pimanager.log.dto.SignDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
@@ -16,6 +17,8 @@ import javax.crypto.Cipher;
 import java.io.*;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.List;
+
 import com.zizimee.api.pimanager.log.entity.ConsentStatusRepository;
 
 @RequiredArgsConstructor
@@ -26,14 +29,12 @@ public class StatusService {
     private final EntLinkageRepository linkageRepository;
 
     @Transactional
-    public void save(byte[] isConsent, Long signId, byte[] signature, String uid) throws Throwable {
+    public void save(List<ConsentStatusRequestDto> requestDto) throws Throwable {
         Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Enterprise enterprise =(Enterprise)principle;
         Long entId = enterprise.getId();
         ConsentForm form = (ConsentForm)formRepository.findRecentByEntId(entId)
                 .orElseThrow(()->new IllegalArgumentException("해당 기업의 form 없습니다"));
-        EntLinkage link = linkageRepository.findByEntIdANDUid(enterprise, uid)
-                .orElse(null);
         //파일에서 privateKey 불러오기
         FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
@@ -49,21 +50,26 @@ public class StatusService {
         //복호화
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-        String status = byteToString(cipher.doFinal(isConsent));
-        //저장
-        ConsentStatus consentStatus = ConsentStatus.builder()
-                .formId(form)
-                .linkId(link)
-                .signId(signId)
-                .signature(signature)
-                .isConsent(status)
-                .build();
-        statusRepository.save(consentStatus);
+
+        for(ConsentStatusRequestDto r : requestDto) {
+            String status = byteToString(cipher.doFinal(r.getIsConsent()));
+            EntLinkage link = linkageRepository.findByEntIdANDUid(enterprise, r.getUid())
+                    .orElse(null);
+            ConsentStatus consentStatus = ConsentStatus.builder()
+                    .formId(form)
+                    .linkId(link)
+                    .signId(r.getSignId())
+                    .signature(r.getSignature())
+                    .isConsent(status)
+                    .build();
+            statusRepository.save(consentStatus);
+        }
     }
 
     @Transactional
     public String signVerify(SignDto requestDto) throws GeneralSecurityException {
-        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId()).orElseThrow(()-> new IllegalArgumentException("동의 여부 상태 정보가 없습니다"));
+        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId())
+                .orElseThrow(()-> new IllegalArgumentException("동의 여부 상태 정보가 없습니다"));
         String status = cs.getIsConsent();
         String item = cs.getFormId().getConsentItem();
         String message = status+item;
