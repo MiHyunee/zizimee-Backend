@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,23 +29,20 @@ public class Enterprise {
 
     private String domainAddress;
     private String registerNmb;
-
-    @ElementCollection
-    @CollectionTable(name = "CONSENT_LIST", joinColumns = @JoinColumn(name="ENTERPRISE_ID"))
-    @Column(name="CONSENT_DETAIL")
-    private List<String> consents = new ArrayList<>();
+    private String fcmToken;
 
     @OneToMany(mappedBy="enterprise")
     private List<Report> reports;
 
 
     @Builder
-    public Enterprise(String name, String signUpId, String password, String domainAddress, String registerNmb, String profileImg) {
+    public Enterprise(String name, String signUpId, String password, String domainAddress, String registerNmb, String profileImg, String fcmToken) {
         this.name = name;
         this.signUpId = signUpId;
         this.password = password;
         this.domainAddress = domainAddress;
         this.registerNmb = registerNmb;
+        this.fcmToken = fcmToken;
     }
 
 

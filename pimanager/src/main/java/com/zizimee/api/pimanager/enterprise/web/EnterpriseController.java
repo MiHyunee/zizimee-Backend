@@ -41,7 +41,7 @@ public class EnterpriseController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(dto);
         } catch (Exception e){
-            return (ResponseEntity<ResponseEnterpriseDto>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.zizimee.api.pimanager.request.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.zizimee.api.pimanager.user.entity.User;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,25 +18,20 @@ public class Response{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Progress progress;
-
     @Lob
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate doneDate;
 
-    @Builder
-    public Response(Progress progress, String content, LocalDate doneDate){
-        this.progress = progress;
-        this.content = content;
-        this.doneDate = doneDate;
-    }
+    @OneToOne
+    @JoinColumn(name = "id_request")
+    private Request request;
 
-    public void update(Progress progress, String content, LocalDate doneDate){
-        this.progress = progress;
+    @Builder
+    public Response(Request request, String content){
+        this.doneDate = LocalDate.now();
+        this.request = request;
         this.content = content;
-        this.doneDate = doneDate;
     }
 }

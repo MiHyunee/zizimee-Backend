@@ -1,6 +1,7 @@
 package com.zizimee.api.pimanager.report.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.zizimee.api.pimanager.BaseTimeEntity;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Report extends BaseTimeEntity{
+public class Report extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

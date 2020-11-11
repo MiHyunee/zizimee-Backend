@@ -12,6 +12,8 @@ public class RequestSignUpDto {
     private String domainAddress;
     private String registerNmb;
 
+    private String fcmToken;
+
     public Enterprise toEntity() {
         return Enterprise.builder()
                 .name(name)
@@ -19,6 +21,7 @@ public class RequestSignUpDto {
                 .password(password)
                 .domainAddress(domainAddress)
                 .registerNmb(registerNmb)
+                .fcmToken(fcmToken)
                 .build();
     }
 
