@@ -31,14 +31,10 @@ public class ResponseService {
         ConsentStatus beforeConsentStatus = consentStatusRepository.findByDate(request.getStartDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));
         ConsentStatus afterConsentStatus = consentStatusRepository.findByDate(request.getEndDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));
         Long consentFormId = beforeConsentStatus.getFormId().getId();
-        ConsentForm consentForm = (ConsentForm)consentFormRepository.findById(consentFormId).orElseThrow(()-> new IllegalArgumentException("form이 없습니다"));
+        ConsentForm consentForm = consentFormRepository.findById(consentFormId).orElseThrow(()-> new IllegalArgumentException("form이 없습니다"));
         if (isSameConsentStatus(beforeConsentStatus.getId(), afterConsentStatus.getId())) {
-            form = makeForm(consentForm, beforeConsentStatus);
             content = "변동 없음\n";
         } else {
-            if(consentForm.getId() == consentForm.getId()) {
-                form = makeForm(consentForm, beforeConsentStatus, afterConsentStatus);
-            }
             content = "변동 있음\n";
         }
 
@@ -106,8 +102,18 @@ public class ResponseService {
         return itemList;
     }
 
-    @Transactional(readOnly = true)
-    public Response findByRequestId(Long id) {
-        return responseRepository.findByIdRequest(id).orElseThrow(()-> new IllegalArgumentException("해당 요청에 대한 응답이 없습니다."));
+    public HashMap<String, Character[]> getForm(Request request) {
+        Response response = responseRepository.findByIdRequest(request.getId())
+                .orElseThrow(()-> new IllegalArgumentException("해당 요청에 대한 응답이 없습니다."));
+        ConsentStatus beforeConsentStatus = consentStatusRepository.findByDate(request.getStartDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));
+        ConsentStatus afterConsentStatus = consentStatusRepository.findByDate(request.getEndDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));
+        Long consentFormId = beforeConsentStatus.getFormId().getId();
+        ConsentForm consentForm = consentFormRepository.findById(consentFormId).orElseThrow(()-> new IllegalArgumentException("form이 없습니다"));
+        if(response.getContent().equals("변동 없음\n")) {
+            return makeForm(consentForm, beforeConsentStatus);
+        }
+        else {
+            return makeForm(consentForm, beforeConsentStatus, afterConsentStatus);
+        }
     }
 }

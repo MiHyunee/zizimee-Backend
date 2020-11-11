@@ -1,6 +1,5 @@
 package com.zizimee.api.pimanager.request.web;
 
-import com.zizimee.api.pimanager.common.util.Pagination;
 import com.zizimee.api.pimanager.request.dto.*;
 import com.zizimee.api.pimanager.request.service.RequestService;
 import lombok.RequiredArgsConstructor;
@@ -28,20 +27,13 @@ public class RequestController {
     }
 
     @GetMapping("/request")
-    public ResponseEntity<Pagination> findAllRequestResponse(HttpServletRequest httpServletRequest,
-                                                                           @RequestParam(defaultValue = "1") int nowPage) {
-        final int requestCountPerPage = 5;
+    public ResponseEntity<List<RequestResponseDto>> findAllRequestResponse(HttpServletRequest httpServletRequest) {
 
         String token = httpServletRequest.getHeader(HEADER_NAME);
         List<RequestResponseDto> requestResponseDto = requestService.findAllRequestResponseDesc(token);
 
-        Pagination pagination = Pagination.builder()
-                .listCount(requestResponseDto.size())
-                .countPerPage(requestCountPerPage)
-                .nowPage(nowPage).build();
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(pagination);
+                .body(requestResponseDto);
     }
 
 }

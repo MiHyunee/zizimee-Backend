@@ -1,20 +1,24 @@
 package com.zizimee.api.pimanager.request.dto;
 
-import com.zizimee.api.pimanager.request.entity.Request;
-import com.zizimee.api.pimanager.request.entity.Response;
 import lombok.Getter;
 import lombok.Builder;
+
+import java.time.LocalDate;
+import java.util.HashMap;
 
 @Getter
 public class RequestResponseDto {
 
-    Request request;
-    Response response;
+    String entName;
+    LocalDate startDate;
+    LocalDate endDate;
+    HashMap<String, Character[]> form;
 
     @Builder
-    public RequestResponseDto(Request request, Response response){
-        this.request = request;
-        this.response = response;
+    public RequestResponseDto(String entName, LocalDate startDate, LocalDate endDate, HashMap<String, Character[]> form) {
+        this.entName = entName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.form = form;
     }
-
 }
