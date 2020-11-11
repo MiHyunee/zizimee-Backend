@@ -13,22 +13,14 @@ public class RequestSaveDto {
     private String content;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Enterprise enterpriseId;
+    private Long enterpriseId;
 
-    @Builder
-    public RequestSaveDto( String content, LocalDate startDate, LocalDate endDate, Enterprise enterpriseId){
-        this.content = content;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.enterpriseId = enterpriseId;
-    }
-
-    public Request toEntity(User userId){
+    public Request toEntity(User userId, Enterprise enterprise){
         return Request.builder()
                 .content(content)
                 .startDate(startDate)
                 .endDate(endDate)
-                .enterpriseId(enterpriseId)
+                .enterpriseId(enterprise)
                 .userId(userId)
                 .build();
     }

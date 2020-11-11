@@ -22,9 +22,6 @@ public class Notice extends BaseTimeEntity {
     @Lob
     private String content;
 
-    @Column(nullable = false)
-    private String type;
-
     @Builder
     public Notice(String title, String content){
         this.title = title;

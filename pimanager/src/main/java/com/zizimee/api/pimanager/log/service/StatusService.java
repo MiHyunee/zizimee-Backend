@@ -1,36 +1,40 @@
 package com.zizimee.api.pimanager.log.service;
 
+import com.zizimee.api.pimanager.consentManagement.entity.EntLinkage;
+import com.zizimee.api.pimanager.consentManagement.entity.EntLinkageRepository;
+import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.log.dto.SignDto;
-import com.zizimee.api.pimanager.log.dto.StatusSaveDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
+import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
 import com.zizimee.api.pimanager.log.entity.ConsentStatus;
-import com.zizimee.api.pimanager.log.entity.FormRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDate;
 import com.zizimee.api.pimanager.log.entity.ConsentStatusRepository;
 
 @RequiredArgsConstructor
 @Service
 public class StatusService {
     private final ConsentStatusRepository statusRepository;
-    private final FormRepository formRepository;
+    private final ConsentFormRepository formRepository;
+    private final EntLinkageRepository linkageRepository;
 
     @Transactional
-    public Long save(byte[] isConsent, Long signId, byte[] signature, LocalDate date) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        //privateKey 읽어오기
-        Long entId = "";
-        ConsentForm formId = formRepository.findByEnterpriseId(entId).findRecent(entId);
+    public void save(byte[] isConsent, Long signId, byte[] signature, String uid) throws Throwable {
+        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Enterprise enterprise =(Enterprise)principle;
+        Long entId = enterprise.getId();
+        ConsentForm form = (ConsentForm)formRepository.findRecentByEntId(entId)
+                .orElseThrow(()->new IllegalArgumentException("해당 기업의 form 없습니다"));
+        EntLinkage link = linkageRepository.findByEntIdANDUid(enterprise, uid)
+                .orElse(null);
+        //파일에서 privateKey 불러오기
         FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
         int curByte1 = 0;
@@ -47,13 +51,19 @@ public class StatusService {
         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
         String status = byteToString(cipher.doFinal(isConsent));
         //저장
-        StatusSaveDto requestDto = new StatusSaveDto(formId, status, signId, signature,date);
-        return statusRepository.save(requestDto.toEntity()).getId();
+        ConsentStatus consentStatus = ConsentStatus.builder()
+                .formId(form)
+                .linkId(link)
+                .signId(signId)
+                .signature(signature)
+                .isConsent(status)
+                .build();
+        statusRepository.save(consentStatus);
     }
 
     @Transactional
     public String signVerify(SignDto requestDto) throws GeneralSecurityException {
-        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId());
+        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId()).orElseThrow(()-> new IllegalArgumentException("동의 여부 상태 정보가 없습니다"));
         String status = cs.getIsConsent();
         String item = cs.getFormId().getConsentItem();
         String message = status+item;

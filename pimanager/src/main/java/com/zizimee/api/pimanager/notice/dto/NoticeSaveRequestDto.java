@@ -10,20 +10,17 @@ import lombok.NoArgsConstructor;
 public class NoticeSaveRequestDto {
     private String title;
     private String content;
-    private String type;
-    
+
     @Builder
-    public NoticeSaveRequestDto(String title, String content, String type){
+    public NoticeSaveRequestDto(String title, String content){
         this.title = title;
         this.content = content;
-        this.type = type;
     }
     
     public Notice toEntity(){
         return Notice.builder()
                 .title(title)
                 .content(content)
-                .type(type)
                 .build();
     }
 }

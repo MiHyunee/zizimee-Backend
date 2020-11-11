@@ -5,14 +5,19 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ConsentStatusRepository extends JpaRepository<ConsentStatus, Long> {
 
-    @Query("SELECT * " +
-            "FROM consentStatus c " +
-            "ORDER BY ABS(DATEDIFF(date, c.date)) " +
+    @Query(nativeQuery = true,
+            value = "SELECT * " +
+            "FROM Consent_Status " +
+            "ORDER BY ABS(DATEDIFF(day, ?1, date)) " +
             "LIMIT 1")
-    ConsentStatus findByDate(LocalDate date);
+    Optional<ConsentStatus> findByDate(LocalDate date);
 
-    ConsentStatus findBySignId(Long signId);
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM Consent_Status S" +
+                    "WHERE S.Sign_Id = ?1")
+    Optional<ConsentStatus> findBySignId(Long signId);
 }

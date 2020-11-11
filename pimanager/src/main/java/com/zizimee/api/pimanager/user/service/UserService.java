@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Optional;
@@ -24,6 +25,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+
+    private static final String provider = "GOOGLE";
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -44,8 +47,7 @@ public class UserService {
             if (idToken != null) {
                 Payload payload = idToken.getPayload();
 
-                String convertedUid = getConvertedUidFromUid(requestDto.getProvider().toString(),
-                        payload.getSubject());
+                String convertedUid = getConvertedUidFromUid(payload.getSubject());
 
                 Optional<User> optionalUser = userRepository.findByUid(convertedUid);
 
@@ -56,7 +58,6 @@ public class UserService {
                             .uid(convertedUid)
                             .name((String) payload.get("name"))
                             .profileImg((String) payload.get("picture"))
-                            .provider(requestDto.getProvider())
                             .build());
                 }
             } else {
@@ -91,7 +92,7 @@ public class UserService {
                         .build());
     }
 
-    private String getConvertedUidFromUid(String provider, String uid) {
+    private String getConvertedUidFromUid(String uid) {
         StringBuilder convertedUid = new StringBuilder();
         convertedUid.append(provider);
         convertedUid.append("_");
@@ -113,5 +114,11 @@ public class UserService {
         } else {
             throw new Exception("INVALID_TOKEN");
         }
+    }
+
+    @Transactional
+    public ResponseEntity tmp(String userId) {
+        userRepository.save(User.builder().name(userId).uid(userId).build());
+        return ResponseEntity.status(HttpStatus.OK).body(jwtTokenProvider.createToken(userId));
     }
 }

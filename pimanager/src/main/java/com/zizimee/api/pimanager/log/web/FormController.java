@@ -10,20 +10,23 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 
+
 @RequiredArgsConstructor
 @RestController
 public class FormController {
     private final FormService formService;
 
     @PostMapping("/keyPair")
-    public PublicKey save() throws IOException, NoSuchAlgorithmException {
-        return formService.save();
+    public ResponseEntity<FormResponseDto> save() throws IOException, NoSuchAlgorithmException {
+        FormResponseDto formResponseDto = formService.save();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(formResponseDto);
     }
 
-    @PutMapping("/form")
-    public ResponseEntity update(@RequestBody byte[] form) throws Exception{
+    @PostMapping("/form")
+    public ResponseEntity update(@RequestBody byte[] form) throws Throwable {
         formService.update(form);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(FormResponseDto.builder().id(id).build());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -20,7 +20,7 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping("/request")
-    public ResponseEntity save(HttpServletRequest httpServletRequest, @RequestBody RequestSaveDto requestDto){
+    public ResponseEntity save(HttpServletRequest httpServletRequest, @RequestBody RequestSaveDto requestDto) throws Throwable {
         String token = httpServletRequest.getHeader(HEADER_NAME);
         requestService.save(requestDto, token);
 

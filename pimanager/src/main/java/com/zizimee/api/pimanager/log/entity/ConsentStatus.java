@@ -18,7 +18,7 @@ public class ConsentStatus {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_consent_form")
+    @JoinColumn(name = "id_form")
     private ConsentForm formId;
 
     @ManyToOne
@@ -38,13 +38,13 @@ public class ConsentStatus {
     private LocalDate date;
 
     @Builder
-    public ConsentStatus(Long id, ConsentForm formId, EntLinkage linkId, String isConsent, Long signId, byte[] signature, LocalDate date){
+    public ConsentStatus(Long id, ConsentForm formId, EntLinkage linkId, String isConsent, Long signId, byte[] signature){
         this.id = id;
         this.formId = formId;
         this.linkId = linkId;
         this.isConsent = isConsent;
         this.signId = signId;
         this.signature = signature;
-        this.date = date;
+        this.date = LocalDate.now();
     }
 }

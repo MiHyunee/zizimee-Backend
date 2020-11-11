@@ -7,16 +7,9 @@ import java.security.PublicKey;
 
 @Getter
 public class FormResponseDto {
-    private Long id;
     private PublicKey publicKey;
 
-    public FormResponseDto(Long id, PublicKey publicKey){
-        this.id = id;
+    public FormResponseDto(PublicKey publicKey){
         this.publicKey = publicKey;
-    }
-
-    @Builder
-    public FormResponseDto(Long id){
-        this.id = id;
     }
 }
