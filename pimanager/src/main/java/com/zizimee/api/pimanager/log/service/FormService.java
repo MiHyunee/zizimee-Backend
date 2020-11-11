@@ -1,12 +1,12 @@
 package com.zizimee.api.pimanager.log.service;
 
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
+import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import com.zizimee.api.pimanager.log.dto.FormResponseDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.crypto.Cipher;
@@ -18,11 +18,12 @@ import java.security.spec.PKCS8EncodedKeySpec;
 @Service
 public class FormService {
     private final ConsentFormRepository formRepository;
+    private final EnterpriseRepository enterpriseRepository;
 
     @Transactional
-    public FormResponseDto save() throws NoSuchAlgorithmException, IOException {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Enterprise enterprise = (Enterprise)principal;
+    public FormResponseDto save(Long entId) throws NoSuchAlgorithmException, IOException {
+        Enterprise enterprise = enterpriseRepository.findById(entId)
+                .orElseThrow(()->new IllegalArgumentException("기업이 존재하지 않습니다"));
         ConsentForm consentForm = new ConsentForm(enterprise);
         //키쌍생성
         Security.addProvider(new BouncyCastleProvider());
@@ -33,7 +34,6 @@ public class FormService {
         PrivateKey privKey = keyPair.getPrivate();
 
         //EntId를 받습니다.
-        Long entId = enterprise.getId();
         formRepository.save(consentForm).getId();
 
         //키를 저장합니다.
@@ -54,12 +54,9 @@ public class FormService {
     }
 
     @Transactional
-    public void update(byte[] encodedItem) throws Throwable {
-        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Enterprise enterprise =(Enterprise)principle;
-        Long entId = enterprise.getId();
+    public void update(Long entId, byte[] encodedItem) throws Throwable {
         //privateKey 읽어오기
-        ConsentForm consentForm = (ConsentForm)formRepository.findRecentByEntId(entId)
+        ConsentForm consentForm = formRepository.findRecentByEntId(entId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 기업의 form이 없습니다."));
         FileInputStream privateFis = new FileInputStream("src\\main\\resources\\"+entId+"\\private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();

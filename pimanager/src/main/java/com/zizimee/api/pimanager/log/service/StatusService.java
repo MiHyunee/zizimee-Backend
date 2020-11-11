@@ -23,10 +23,7 @@ public class StatusService {
     private final ConsentFormRepository formRepository;
 
     @Transactional
-    public void save(byte[] isConsent, Long signId, byte[] signature) throws Throwable {
-        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Enterprise enterprise =(Enterprise)principle;
-        Long entId = enterprise.getId();
+    public void save(Long entId, byte[] isConsent, Long signId, byte[] signature) throws Throwable {
         ConsentForm form = (ConsentForm)formRepository.findRecentByEntId(entId)
                 .orElseThrow(()->new IllegalArgumentException("해당 기업의 form 없습니다"));
         FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");

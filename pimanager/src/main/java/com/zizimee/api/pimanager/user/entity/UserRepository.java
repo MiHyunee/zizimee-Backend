@@ -15,6 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<String> getFcmTokens();
 
     Optional<User> findByUid(String uid);
-
-    User findByName(String name);
 }
