@@ -31,7 +31,7 @@ public class ConsentStatus {
     @Column
     private Long signId;
 
-    @Column
+    @Column(length=260)
     private byte[] signature;
 
     @Column

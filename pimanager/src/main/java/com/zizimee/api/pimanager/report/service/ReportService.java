@@ -1,8 +1,9 @@
 package com.zizimee.api.pimanager.report.service;
 
 import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
-import com.zizimee.api.pimanager.report.dto.AnalysisDto;
-import com.zizimee.api.pimanager.report.dto.ReportListResponseDto;
+import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
+import com.zizimee.api.pimanager.log.entity.ConsentStatus;
+import com.zizimee.api.pimanager.log.entity.ConsentStatusRepository;
 import com.zizimee.api.pimanager.report.dto.ReportSaveRequestDto;
 import com.zizimee.api.pimanager.report.entity.Report;
 import com.zizimee.api.pimanager.report.entity.ReportRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,46 +22,25 @@ import java.util.stream.Collectors;
 public class ReportService {
 
     private final ReportRepository reportRepository;
-    private final RequestRepository requestRepository;
-    private final EnterpriseRepository enterpriseRepository;
-    private final Analysis analysis;
-
+    private final ConsentFormRepository formRepository;
+    private final ConsentStatusRepository statusRepository;
+/*
     @Transactional
-    public AnalysisDto save(ReportSaveRequestDto requestDto){
-        reportRepository.save(requestDto.toEntity(enterpriseRepository.getOne(requestDto.getIdEnterprise())));
-        Long deleteCnt = requestRepository.countByEnterpriseIdAndStartDateBetween(enterpriseRepository.getOne(requestDto.getIdEnterprise()), requestDto.getStartDate(), requestDto.getEndDate());
-        List<String> contentList = requestRepository.getContents(requestDto.getIdEnterprise(), requestDto.getStartDate(), requestDto.getEndDate())
-                .stream().map(String::toString).collect(Collectors.toList());
-        Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
+    public void report() {
+        Long formId = formRepository.findRecentByEntId(entId).getId();
+        List<ConsentStatus> status = statusRepository.findByFormIdAndDate(formId, start, end);
+        int disagree=0, agree=0;
+        for(ConsentStatus s : status){
+            String isConsent = s.getIsConsent();
+            for(int i=0;i<isConsent.length();i++){
+                if(isConsent.charAt(i)==0)
+                    disagree++;
+                else
+                    agree++
+            }
+        }
+        return reportRepository.save()
+    }*/
 
-        return AnalysisDto.builder()
-                .deleteCnt(deleteCnt)
-                .wordList(wordMap)
-                .build();
-    }
-
-    @Transactional
-    public void delete(Long id){
-        Report report = reportRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 레포트가 없습니다."));
-        reportRepository.delete(report);
-    }
-
-    @Transactional(readOnly=true)
-    public AnalysisDto countInfo(Report report) {
-
-        Long deleteCnt = requestRepository.countByEnterpriseIdAndStartDateBetween(enterpriseRepository.getOne(report.getEnterprise().getId()), report.getStartDate(), report.getEndDate());
-        List<String> contentList = requestRepository.getContents(report.getEnterprise().getId(), report.getStartDate(), report.getEndDate());
-        Map<String, Integer> wordMap = analysis.analyzeWords(contentList);
-
-        return AnalysisDto.builder().deleteCnt(deleteCnt).wordList(wordMap).build();
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReportListResponseDto> findAllDesc() {
-        return reportRepository.findAllDesc().stream()
-                .map(ReportListResponseDto::new)
-                .collect(Collectors.toList());
-    }
 
 }

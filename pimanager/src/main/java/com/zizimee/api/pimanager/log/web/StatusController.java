@@ -24,10 +24,8 @@ public class StatusController {
                 .build();
     }
 
-
     @PostMapping("/signVerify")
     public String signVerify(@RequestBody SignDto signDto) throws GeneralSecurityException {
         return statusService.signVerify(signDto);
     }
-
 }

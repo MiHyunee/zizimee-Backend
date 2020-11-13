@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 
 
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class FormController {
     private final FormService formService;
 
     @PostMapping("/keyPair")
-    public ResponseEntity<FormResponseDto> save() throws IOException, NoSuchAlgorithmException {
+    public ResponseEntity<FormResponseDto> save() throws Exception {
         FormResponseDto formResponseDto = formService.save();
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -29,4 +28,5 @@ public class FormController {
         formService.update(form);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 }

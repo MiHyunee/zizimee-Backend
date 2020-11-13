@@ -5,7 +5,6 @@ import com.zizimee.api.pimanager.log.dto.FormResponseDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +19,13 @@ public class FormService {
     private final ConsentFormRepository formRepository;
 
     @Transactional
-    public FormResponseDto save() throws NoSuchAlgorithmException, IOException {
+    public FormResponseDto save() throws Exception {
+        System.out.println("checkout");
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Enterprise enterprise = (Enterprise)principal;
+        System.out.println("checkout");
         ConsentForm consentForm = new ConsentForm(enterprise);
         //키쌍생성
-        Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(2048);
         KeyPair keyPair = kpg.genKeyPair();
@@ -94,5 +94,6 @@ public class FormService {
         }
         return sb.toString();
     }
+
 
 }
