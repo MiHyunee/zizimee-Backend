@@ -16,7 +16,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/user/sign-in", "/user/login",
@@ -24,7 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/h2-console/**", "/swagger-resources/**", "/swagger-ui.html",
                 "/v2/api-docs" , "/configuration/ui" , "/configuration/security", "/**");
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -44,9 +42,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()  //인증된 사용자(로그인 한 사용자)들만 허용
         ;
 
-        //security는 id-pw기반인증
-        //username = id
-        //session disable
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 

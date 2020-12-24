@@ -1,12 +1,10 @@
 package com.zizimee.api.pimanager.log.service;
 
-import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.log.dto.SignDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
 import com.zizimee.api.pimanager.log.entity.ConsentStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +22,9 @@ public class StatusService {
 
     @Transactional
     public void save(Long entId, byte[] isConsent, Long signId, byte[] signature) throws Throwable {
-        ConsentForm form = (ConsentForm)formRepository.findRecentByEntId(entId)
+        ConsentForm form = formRepository.findRecentByEntId(entId)
                 .orElseThrow(()->new IllegalArgumentException("해당 기업의 form 없습니다"));
-        FileInputStream privateFis = new FileInputStream("src\\main\\resourves\\"+entId+"private.key");
+        FileInputStream privateFis = new FileInputStream("src\\main\\resources\\"+entId+"private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
         int curByte1 = 0;
         while ((curByte1 = privateFis.read()) != -1) {
@@ -53,11 +51,12 @@ public class StatusService {
 
     @Transactional
     public String signVerify(SignDto requestDto) throws GeneralSecurityException {
-        ConsentStatus cs = statusRepository.findBySignId(requestDto.getSignId()).orElseThrow(()-> new IllegalArgumentException("동의 여부 상태 정보가 없습니다"));
-        String status = cs.getIsConsent();
-        String item = cs.getFormId().getConsentItem();
+        ConsentStatus consentStatus = statusRepository.findBySignId(requestDto.getSignId())
+                .orElseThrow(()-> new IllegalArgumentException("동의 여부 상태 정보가 없습니다"));
+        String status = consentStatus.getIsConsent();
+        String item = consentStatus.getFormId().getConsentItem();
         String message = status+item;
-        byte[] signature = cs.getSignature();
+        byte[] signature = consentStatus.getSignature();
 
         boolean verified = verify(requestDto.getPub(), signature, message.getBytes());
         if(verified)
@@ -66,8 +65,7 @@ public class StatusService {
             return "검증에 실패하였습니다.";
     }
 
-    public boolean verify(PublicKey pub, byte[] signature, byte[] message)
-        throws GeneralSecurityException{
+    public boolean verify(PublicKey pub, byte[] signature, byte[] message) throws GeneralSecurityException{
         Signature sig = Signature.getInstance("SHA256withRSA/PSS");
         sig.initVerify(pub);
         sig.update(message);

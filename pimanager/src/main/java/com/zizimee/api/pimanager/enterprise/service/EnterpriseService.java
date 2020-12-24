@@ -21,10 +21,10 @@ public class EnterpriseService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         Enterprise enterprise = enterpriseRepository.getOne(Long.valueOf(id));
-        if(enterprise.getId().equals(Long.valueOf(id))) {
+        if(!enterprise.getId().equals(Long.valueOf(id))) {
             throw new UsernameNotFoundException("INVALID REQUEST");
         }
-        return org.springframework.security.core.userdetails.User.builder().username(id).build();
+        return org.springframework.security.core.userdetails.User.builder().username(id).password("").roles("").build();
     }
 
 

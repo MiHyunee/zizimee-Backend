@@ -21,9 +21,13 @@ public class FormService {
     private final EnterpriseRepository enterpriseRepository;
 
     @Transactional
-    public FormResponseDto save(Long entId) throws NoSuchAlgorithmException, IOException {
+    public FormResponseDto save(Enterprise enterprise) throws NoSuchAlgorithmException, IOException {
+
+        /*
         Enterprise enterprise = enterpriseRepository.findById(entId)
                 .orElseThrow(()->new IllegalArgumentException("기업이 존재하지 않습니다"));
+
+         */
         ConsentForm consentForm = new ConsentForm(enterprise);
         //키쌍생성
         Security.addProvider(new BouncyCastleProvider());
@@ -33,29 +37,32 @@ public class FormService {
         PublicKey pubKey = keyPair.getPublic();
         PrivateKey privKey = keyPair.getPrivate();
 
-        //EntId를 받습니다.
         formRepository.save(consentForm).getId();
 
         //키를 저장합니다.
-        String path = "src\\main\\resources\\"+entId;
+        Long entId = enterprise.getId();
+        String path = "pimanager\\src\\main\\resources\\"+ entId;
         File makeFolder = new File(path);
-        if(!makeFolder.mkdir())
-            makeFolder.mkdir();
+        boolean wasSuccessful = makeFolder.mkdir();
+        if(!wasSuccessful)
+            System.out.println("존재하는 디렉토리입니다.");
 
-        FileOutputStream publicFos = new FileOutputStream(path+"public.key");
+        FileOutputStream publicFos = new FileOutputStream(path+"\\public.key");
+        byte[] bytePublic = pubKey.getEncoded();
         publicFos.write(pubKey.getEncoded());
         publicFos.close();
 
-        FileOutputStream privateFos = new FileOutputStream(path+"private.key");
+        FileOutputStream privateFos = new FileOutputStream(path+"\\private.key");
         privateFos.write(privKey.getEncoded());
         privateFos.close();
 
-        return new FormResponseDto(pubKey);
+        return new FormResponseDto(bytePublic);
     }
 
     @Transactional
-    public void update(Long entId, byte[] encodedItem) throws Throwable {
+    public void update(Enterprise enterprise, byte[] encodedItem) throws Throwable {
         //privateKey 읽어오기
+        Long entId = enterprise.getId();
         ConsentForm consentForm = formRepository.findRecentByEntId(entId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 기업의 form이 없습니다."));
         FileInputStream privateFis = new FileInputStream("src\\main\\resources\\"+entId+"\\private.key");
