@@ -18,16 +18,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 @Service
 public class FormService {
     private final ConsentFormRepository formRepository;
-    private final EnterpriseRepository enterpriseRepository;
 
     @Transactional
     public FormResponseDto save(Enterprise enterprise) throws NoSuchAlgorithmException, IOException {
-
-        /*
-        Enterprise enterprise = enterpriseRepository.findById(entId)
-                .orElseThrow(()->new IllegalArgumentException("기업이 존재하지 않습니다"));
-
-         */
         ConsentForm consentForm = new ConsentForm(enterprise);
         //키쌍생성
         Security.addProvider(new BouncyCastleProvider());

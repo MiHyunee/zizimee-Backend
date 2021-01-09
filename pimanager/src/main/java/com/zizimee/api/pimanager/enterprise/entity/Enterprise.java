@@ -39,7 +39,7 @@ public class Enterprise {
 
 
     @Builder
-    public Enterprise(String name, String signUpId, String password, String domainAddress, String registerNmb, String profileImg, String fcmToken) {
+    public Enterprise(String name, String signUpId, String password, String domainAddress, String registerNmb, String fcmToken) {
         this.name = name;
         this.signUpId = signUpId;
         this.password = password;
@@ -55,5 +55,4 @@ public class Enterprise {
     public void setSalt(String salt) {
         this.salt = salt;
     }
-
 }
