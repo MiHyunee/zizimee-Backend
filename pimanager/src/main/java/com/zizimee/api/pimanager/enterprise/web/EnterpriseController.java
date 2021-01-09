@@ -20,12 +20,9 @@ public class EnterpriseController {
     @PostMapping("/sign-up")
     public ResponseEntity signUp(@RequestBody RequestSignUpDto requestSignUpDto) throws Exception {
 
-        Long id = enterpriseService.signUp(requestSignUpDto);
+        enterpriseService.signUp(requestSignUpDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ResponseEnterpriseDto.builder()
-                .id(id)
-                .build());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/sign-in")
@@ -36,7 +33,7 @@ public class EnterpriseController {
             if(token != null) {
                 dto = enterpriseService.loginByToken(token);
             } else {
-                dto = enterpriseService.loginByOauth(requestSignInDto);
+                dto = enterpriseService.loginByPassword(requestSignInDto);
             }
             return ResponseEntity.status(HttpStatus.OK)
                     .body(dto);

@@ -18,7 +18,7 @@ public class RequestSignUpDto {
         return Enterprise.builder()
                 .name(name)
                 .signUpId(signUpId)
-                .password(password)
+//                .password(password)
                 .domainAddress(domainAddress)
                 .registerNmb(registerNmb)
                 .fcmToken(fcmToken)

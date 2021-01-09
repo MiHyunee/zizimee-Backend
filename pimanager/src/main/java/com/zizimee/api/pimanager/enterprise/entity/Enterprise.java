@@ -27,6 +27,9 @@ public class Enterprise {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String salt;
+
     private String domainAddress;
     private String registerNmb;
     private String fcmToken;
@@ -45,5 +48,12 @@ public class Enterprise {
         this.fcmToken = fcmToken;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
 }
