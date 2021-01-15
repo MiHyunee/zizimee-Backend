@@ -91,6 +91,7 @@ local.properties
 /build/
 .idea
 application-oauth.properties
+application-mail.properties
 *.json
 
 
