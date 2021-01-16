@@ -56,4 +56,8 @@ public class EnterpriseController {
         return new ResponseEntity(dto, HttpStatus.OK);
     }
 
+    @GetMapping("/verify-email-token")
+    public ResponseEntity verifyEmailToken(@RequestParam("token") String token, @RequestParam("email") String email) {
+        return enterpriseService.verifyEmailToken(token, email);
+    }
 }

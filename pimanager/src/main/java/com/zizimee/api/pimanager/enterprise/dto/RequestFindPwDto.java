@@ -6,4 +6,5 @@ import lombok.Getter;
 public class RequestFindPwDto {
     private String signUpId;
     private String registerNmb;
+    private String email;
 }

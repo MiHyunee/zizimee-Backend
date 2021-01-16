@@ -2,15 +2,22 @@ package com.zizimee.api.pimanager.enterprise.service;
 
 import com.zizimee.api.pimanager.common.auth.PasswordEncoder;
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
+import com.zizimee.api.pimanager.common.mail.MailService;
 import com.zizimee.api.pimanager.enterprise.dto.*;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailMessage;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.mail.internet.MimeMessage;
 
 @RequiredArgsConstructor
 @Service
@@ -19,6 +26,7 @@ public class EnterpriseService implements UserDetailsService {
     public final EnterpriseRepository enterpriseRepository;
     public final JwtTokenProvider jwtTokenProvider;
     public final PasswordEncoder passwordEncoder;
+    public final MailService mailService;
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
@@ -41,6 +49,11 @@ public class EnterpriseService implements UserDetailsService {
         String salt = passwordEncoder.genSalt();
         enterprise.setSalt(salt);
         enterprise.setPassword(passwordEncoder.encodePassword(password, salt));
+        enterprise.genTempVerifyingEmailToken();
+
+        MimeMessage message = mailService.createSignUpMessage(enterprise);
+        mailService.send(message);
+
         enterpriseRepository.save(enterprise);
     }
 
@@ -52,7 +65,7 @@ public class EnterpriseService implements UserDetailsService {
                     .name(enterprise.getName())
                     .build();
         } else {
-            throw new Exception("invaid token");
+            throw new Exception("invalid token");
         }
     }
 
@@ -93,5 +106,16 @@ public class EnterpriseService implements UserDetailsService {
         return ResponseEnterpriseDto.builder()
                 .password(enterprise.getPassword())
                 .build();
+    }
+
+    @Transactional
+    public ResponseEntity verifyEmailToken(String token, String email) {
+        Enterprise enterprise = enterpriseRepository.findByEmail(email)
+                .orElseThrow(()-> new IllegalArgumentException("Invalid Email"));
+        if(enterprise.getEmailVerifyingToken().equals(token)) {
+            enterprise.setEmailVerified(true);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

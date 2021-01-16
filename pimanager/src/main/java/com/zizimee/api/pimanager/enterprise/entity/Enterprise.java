@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,6 +32,12 @@ public class Enterprise {
     @Column(nullable = false)
     private String salt;
 
+    @Column(nullable = false)
+    private String email;
+
+    private String emailVerifyingToken;
+    private boolean emailVerified;
+
     private String domainAddress;
     private String registerNmb;
     private String fcmToken;
@@ -39,10 +47,11 @@ public class Enterprise {
 
 
     @Builder
-    public Enterprise(String name, String signUpId, String password, String domainAddress, String registerNmb, String fcmToken) {
+    public Enterprise(String name, String signUpId, String password, String email, String domainAddress, String registerNmb, String fcmToken) {
         this.name = name;
         this.signUpId = signUpId;
         this.password = password;
+        this.email = email;
         this.domainAddress = domainAddress;
         this.registerNmb = registerNmb;
         this.fcmToken = fcmToken;
@@ -55,4 +64,13 @@ public class Enterprise {
     public void setSalt(String salt) {
         this.salt = salt;
     }
+
+    public void setEmailVerified(boolean verified) {
+        this.emailVerified = true;
+    }
+
+    public void genTempVerifyingEmailToken() {
+        this.emailVerifyingToken = UUID.randomUUID().toString();
+    }
+
 }
