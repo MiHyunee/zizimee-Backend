@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
@@ -50,10 +51,12 @@ public class EnterpriseController {
     }
 
     @GetMapping("/pwInquiry")
-    public ResponseEntity<ResponseEnterpriseDto> findPw(@RequestBody RequestFindPwDto requestFindPwDto) {
-        ResponseEnterpriseDto dto = enterpriseService.findPw(requestFindPwDto);
-
-        return new ResponseEntity(dto, HttpStatus.OK);
+    public ResponseEntity genTempPwAndSendMail(@RequestBody RequestFindPwDto requestFindPwDto) {
+        try {
+            return enterpriseService.genTempPwAndSendMail(requestFindPwDto);
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("/verify-email-token")

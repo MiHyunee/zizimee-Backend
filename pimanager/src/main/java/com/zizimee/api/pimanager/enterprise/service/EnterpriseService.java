@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @RequiredArgsConstructor
@@ -98,14 +99,35 @@ public class EnterpriseService implements UserDetailsService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
-    public ResponseEnterpriseDto findPw(RequestFindPwDto requestFindPwDto) {
+    @Transactional
+    public ResponseEntity genTempPwAndSendMail(RequestFindPwDto requestFindPwDto) throws MessagingException {
         Enterprise enterprise = enterpriseRepository.findByRegisterNmbAndSignUpId(requestFindPwDto.getRegisterNmb(), requestFindPwDto.getSignUpId())
                 .orElseThrow(()-> new IllegalArgumentException("Invalid request"));
+        if(!enterprise.isEmailVerified()) {
+            throw new IllegalArgumentException("verify email first");
+        }
+        String tempPw = genTempPw();
+        String salt = enterprise.getSalt();
+        enterprise.setPassword(passwordEncoder.encodePassword(tempPw, salt));
+        MimeMessage message = mailService.createTempPwMessage(tempPw, enterprise.getEmail());
+        mailService.send(message);
 
-        return ResponseEnterpriseDto.builder()
-                .password(enterprise.getPassword())
-                .build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    private String genTempPw() {
+        String tempPw = "";
+        char[] pwCollection = new char[]{
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                'A', 'B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                '!','@','#','$','%','^','&','*','(',')'};
+
+        for(int i=0; i<8; i++) {
+            int randPw = (int)(Math.random()*(pwCollection.length));
+            tempPw += pwCollection[randPw];
+        }
+        return tempPw;
     }
 
     @Transactional

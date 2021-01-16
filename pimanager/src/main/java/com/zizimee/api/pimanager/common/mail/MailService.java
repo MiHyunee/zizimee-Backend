@@ -15,6 +15,7 @@ import javax.mail.internet.MimeMessage;
 public class MailService {
 
     public final JavaMailSender mailSender;
+    private final static String CHARSET = "UTF-8";
 
     public void send(MimeMessage message) {
         mailSender.send(message);
@@ -26,8 +27,17 @@ public class MailService {
 
         MimeMessage mailMessage = mailSender.createMimeMessage();
         mailMessage.addRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(enterprise.getEmail())});
-        mailMessage.setSubject("회원 가입 인증 이메일", "UTF-8");
+        mailMessage.setSubject("회원 가입 인증 이메일", CHARSET);
         mailMessage.setText(url, "UTF-8", "html");
+
+        return mailMessage;
+    }
+
+    public MimeMessage createTempPwMessage(String pw, String to) throws MessagingException {
+        MimeMessage mailMessage = mailSender.createMimeMessage();
+        mailMessage.addRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(to)});
+        mailMessage.setSubject("임시 패스워드 알림 이메일", CHARSET);
+        mailMessage.setText("임시 패스워드 \n" + pw, CHARSET);
 
         return mailMessage;
     }
