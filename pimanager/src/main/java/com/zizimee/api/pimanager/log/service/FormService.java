@@ -1,7 +1,6 @@
 package com.zizimee.api.pimanager.log.service;
 
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
-import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
 import com.zizimee.api.pimanager.log.dto.FormResponseDto;
 import com.zizimee.api.pimanager.log.entity.ConsentForm;
 import com.zizimee.api.pimanager.log.entity.ConsentFormRepository;
@@ -9,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.crypto.Cipher;
 import java.io.*;
 import java.security.*;
@@ -18,6 +18,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 @Service
 public class FormService {
     private final ConsentFormRepository formRepository;
+    private final static String resourcePath = "pimanager\\src\\main\\resources\\";
 
     @Transactional
     public FormResponseDto save(Enterprise enterprise) throws NoSuchAlgorithmException, IOException {
@@ -34,7 +35,7 @@ public class FormService {
 
         //키를 저장합니다.
         Long entId = enterprise.getId();
-        String path = "pimanager\\src\\main\\resources\\"+ entId;
+        String path = resourcePath + entId;
         File makeFolder = new File(path);
         boolean wasSuccessful = makeFolder.mkdir();
         if(!wasSuccessful)
@@ -58,14 +59,13 @@ public class FormService {
         Long entId = enterprise.getId();
         ConsentForm consentForm = formRepository.findRecentByEntId(entId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 기업의 form이 없습니다."));
-        FileInputStream privateFis = new FileInputStream("src\\main\\resources\\"+entId+"\\private.key");
+        FileInputStream privateFis = new FileInputStream(resourcePath + entId + "\\private.key");
         ByteArrayOutputStream privKeyBaos = new ByteArrayOutputStream();
         int curByte1 = 0;
         while ((curByte1 = privateFis.read()) != -1)
             privKeyBaos.write(curByte1);
 
-        PKCS8EncodedKeySpec privKeySpec
-                = new PKCS8EncodedKeySpec(privKeyBaos.toByteArray());
+        PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(privKeyBaos.toByteArray());
         privKeyBaos.close();
         KeyFactory fac = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = fac.generatePrivate(privKeySpec);

@@ -19,7 +19,6 @@ public class FormController {
 
     @PostMapping("/keyPair")
     public ResponseEntity<FormResponseDto> save(@CheckEnt Enterprise enterprise) throws IOException, NoSuchAlgorithmException {
-        System.out.println(enterprise.getId());
         FormResponseDto formResponseDto = formService.save(enterprise);
 
         return ResponseEntity.status(HttpStatus.OK)
