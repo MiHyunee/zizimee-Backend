@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/user/sign-in", "/user/login",
-                "/enterprise/sign-up", "/enterprise/sign-in", "/enterprise/idInquiry", "/enterprise/pwInquiry",
+                "/enterprise/sign-up", "/enterprise/sign-in", "/enterprise/idInquiry", "/enterprise/pwInquiry", "/enterprise/verify-email-token",
                 "/h2-console/**", "/swagger-resources/**", "/swagger-ui.html",
                 "/v2/api-docs" , "/configuration/ui" , "/configuration/security", "/**");
     }
