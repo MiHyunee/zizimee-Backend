@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Component
@@ -26,7 +26,8 @@ public class CheckEntAspect {
                 .orElseThrow(()->new IllegalArgumentException("@CheckEnt NULL"));
 
         if(enterprise != null) {
-            return joinPoint.proceed(new Enterprise[] {enterprise});
+            Object[] args = Arrays.stream(joinPoint.getArgs()).map(data -> {if(data instanceof Enterprise) { data = enterprise; } return data; }).toArray();
+            return joinPoint.proceed(args);
         }
         else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
