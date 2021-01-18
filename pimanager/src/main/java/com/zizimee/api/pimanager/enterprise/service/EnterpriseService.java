@@ -6,11 +6,10 @@ import com.zizimee.api.pimanager.common.mail.MailService;
 import com.zizimee.api.pimanager.enterprise.dto.*;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
+import com.zizimee.api.pimanager.request.entity.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailMessage;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -100,8 +99,8 @@ public class EnterpriseService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity genTempPwAndSendMail(RequestFindPwDto requestFindPwDto) throws MessagingException {
-        Enterprise enterprise = enterpriseRepository.findByRegisterNmbAndSignUpId(requestFindPwDto.getRegisterNmb(), requestFindPwDto.getSignUpId())
+    public ResponseEntity genTempPwAndSendMail(RequestTempPwDto requestTempPwDto) throws MessagingException {
+        Enterprise enterprise = enterpriseRepository.findByRegisterNmbAndSignUpId(requestTempPwDto.getRegisterNmb(), requestTempPwDto.getSignUpId())
                 .orElseThrow(()-> new IllegalArgumentException("Invalid request"));
         if(!enterprise.isEmailVerified()) {
             throw new IllegalArgumentException("verify email first");
@@ -139,5 +138,14 @@ public class EnterpriseService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @Transactional
+    public ResponseEntity changePw(Enterprise enterprise, String password) {
+        String salt = enterprise.getSalt();
+        String encodedPw = passwordEncoder.encodePassword(password, salt);
+        enterprise.setPassword(encodedPw);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
