@@ -1,15 +1,23 @@
 package com.zizimee.api.pimanager.enterprise.service;
 
+import com.zizimee.api.pimanager.common.auth.PasswordEncoder;
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
+import com.zizimee.api.pimanager.common.mail.MailService;
 import com.zizimee.api.pimanager.enterprise.dto.*;
 import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.entity.EnterpriseRepository;
+import com.zizimee.api.pimanager.request.entity.Response;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @RequiredArgsConstructor
 @Service
@@ -17,25 +25,36 @@ public class EnterpriseService implements UserDetailsService {
 
     public final EnterpriseRepository enterpriseRepository;
     public final JwtTokenProvider jwtTokenProvider;
+    public final PasswordEncoder passwordEncoder;
+    public final MailService mailService;
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         Enterprise enterprise = enterpriseRepository.getOne(Long.valueOf(id));
-        if(enterprise.getId().equals(Long.valueOf(id))) {
+        if(!enterprise.getId().equals(Long.valueOf(id))) {
             throw new UsernameNotFoundException("INVALID REQUEST");
         }
-        return org.springframework.security.core.userdetails.User.builder().username(id).build();
+        return org.springframework.security.core.userdetails.User.builder().username(id).password("").roles("").build();
     }
 
 
-    public Long signUp(RequestSignUpDto requestSignUpDto) throws Exception {
+    @Transactional
+    public void signUp(RequestSignUpDto requestSignUpDto) throws Exception {
         if(enterpriseRepository.findByRegisterNmb(requestSignUpDto.getRegisterNmb()) == null)
             throw new Exception("Already used name");
         if(enterpriseRepository.findBySignUpId(requestSignUpDto.getSignUpId()) == null)
             throw new Exception("Already used id");
-        Enterprise enterprise = enterpriseRepository.save(requestSignUpDto.toEntity());
+        Enterprise enterprise = requestSignUpDto.toEntity();
+        String password = requestSignUpDto.getPassword();
+        String salt = passwordEncoder.genSalt();
+        enterprise.setSalt(salt);
+        enterprise.setPassword(passwordEncoder.encodePassword(password, salt));
+        enterprise.genTempVerifyingEmailToken();
 
-        return enterprise.getId();
+        MimeMessage message = mailService.createSignUpMessage(enterprise);
+        mailService.send(message);
+
+        enterpriseRepository.save(enterprise);
     }
 
     public ResponseEnterpriseDto loginByToken(String token) throws Exception {
@@ -46,18 +65,21 @@ public class EnterpriseService implements UserDetailsService {
                     .name(enterprise.getName())
                     .build();
         } else {
-            throw new Exception("invaid token");
+            throw new Exception("invalid token");
         }
     }
 
     @Transactional(readOnly = true)
-    public ResponseEnterpriseDto loginByOauth(RequestSignInDto requestSignInDto) throws Exception {
+    public ResponseEnterpriseDto loginByPassword(RequestSignInDto requestSignInDto) throws Exception {
         Enterprise enterprise = enterpriseRepository.findBySignUpId(requestSignInDto.getSignUpId()).orElseThrow(()-> new IllegalArgumentException("해당 아이다가 없습니다."));
         if(enterprise==null) {
             throw new Exception("INVALID ID");
         }
-        if(!enterprise.getPassword().equals(requestSignInDto.getPassword())) {
-            throw new Exception("INVLAID PASSWORD");
+
+        String salt = enterprise.getSalt();
+        String password = passwordEncoder.encodePassword(requestSignInDto.getPassword(), salt);
+        if(!enterprise.getPassword().equals(password)) {
+            throw new Exception("INVALID PASSWORD");
         }
         String newToken = jwtTokenProvider.createToken(enterprise.getId().toString());
         return ResponseEnterpriseDto.builder()
@@ -65,7 +87,6 @@ public class EnterpriseService implements UserDetailsService {
                 .name(enterprise.getName())
                 .token(newToken)
                 .build();
-
     }
 
     @Transactional(readOnly = true)
@@ -77,13 +98,54 @@ public class EnterpriseService implements UserDetailsService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
-    public ResponseEnterpriseDto findPw(RequestFindPwDto requestFindPwDto) {
-        Enterprise enterprise = enterpriseRepository.findByRegisterNmbAndSignUpId(requestFindPwDto.getRegisterNmb(), requestFindPwDto.getSignUpId())
+    @Transactional
+    public ResponseEntity genTempPwAndSendMail(RequestTempPwDto requestTempPwDto) throws MessagingException {
+        Enterprise enterprise = enterpriseRepository.findByRegisterNmbAndSignUpId(requestTempPwDto.getRegisterNmb(), requestTempPwDto.getSignUpId())
                 .orElseThrow(()-> new IllegalArgumentException("Invalid request"));
+        if(!enterprise.isEmailVerified()) {
+            throw new IllegalArgumentException("verify email first");
+        }
+        String tempPw = genTempPw();
+        String salt = enterprise.getSalt();
+        enterprise.setPassword(passwordEncoder.encodePassword(tempPw, salt));
+        MimeMessage message = mailService.createTempPwMessage(tempPw, enterprise.getEmail());
+        mailService.send(message);
 
-        return ResponseEnterpriseDto.builder()
-                .password(enterprise.getPassword())
-                .build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    private String genTempPw() {
+        String tempPw = "";
+        char[] pwCollection = new char[]{
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                'A', 'B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                '!','@','#','$','%','^','&','*','(',')'};
+
+        for(int i=0; i<8; i++) {
+            int randPw = (int)(Math.random()*(pwCollection.length));
+            tempPw += pwCollection[randPw];
+        }
+        return tempPw;
+    }
+
+    @Transactional
+    public ResponseEntity verifyEmailToken(String token, String email) {
+        Enterprise enterprise = enterpriseRepository.findByEmail(email)
+                .orElseThrow(()-> new IllegalArgumentException("Invalid Email"));
+        if(enterprise.getEmailVerifyingToken().equals(token)) {
+            enterprise.setEmailVerified(true);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @Transactional
+    public ResponseEntity changePw(Enterprise enterprise, String password) {
+        String salt = enterprise.getSalt();
+        String encodedPw = passwordEncoder.encodePassword(password, salt);
+        enterprise.setPassword(encodedPw);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

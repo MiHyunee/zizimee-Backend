@@ -26,6 +26,7 @@ public class ReportService {
     private final ConsentStatusRepository statusRepository;
 /*
     @Transactional
+<<<<<<< HEAD
     public void report() {
         Long formId = formRepository.findRecentByEntId(entId).getId();
         List<ConsentStatus> status = statusRepository.findByFormIdAndDate(formId, start, end);

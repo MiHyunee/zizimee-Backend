@@ -1,15 +1,12 @@
 package com.zizimee.api.pimanager.log.dto;
 
-import lombok.Builder;
 import lombok.Getter;
-
-import java.security.PublicKey;
 
 @Getter
 public class FormResponseDto {
-    private PublicKey publicKey;
+    private byte[] publicKey;
 
-    public FormResponseDto(PublicKey publicKey){
-        this.publicKey = publicKey;
+    public FormResponseDto(byte[] bytePublic){
+        this.publicKey = bytePublic;
     }
 }

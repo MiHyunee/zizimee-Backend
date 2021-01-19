@@ -1,13 +1,16 @@
 package com.zizimee.api.pimanager.enterprise.web;
 
+import com.zizimee.api.pimanager.common.auth.CheckEnt;
 import com.zizimee.api.pimanager.common.jwt.JwtTokenProvider;
 import com.zizimee.api.pimanager.enterprise.dto.*;
+import com.zizimee.api.pimanager.enterprise.entity.Enterprise;
 import com.zizimee.api.pimanager.enterprise.service.EnterpriseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
@@ -20,23 +23,20 @@ public class EnterpriseController {
     @PostMapping("/sign-up")
     public ResponseEntity signUp(@RequestBody RequestSignUpDto requestSignUpDto) throws Exception {
 
-        Long id = enterpriseService.signUp(requestSignUpDto);
+        enterpriseService.signUp(requestSignUpDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ResponseEnterpriseDto.builder()
-                .id(id)
-                .build());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<ResponseEnterpriseDto> signIn(HttpServletRequest request, @RequestBody RequestSignInDto requestSignInDto) throws Exception {
+    public ResponseEntity<ResponseEnterpriseDto> signIn(HttpServletRequest request, @RequestBody RequestSignInDto requestSignInDto) {
         try {
             String token = request.getHeader(JwtTokenProvider.HEADER_NAME);
             ResponseEnterpriseDto dto;
             if(token != null) {
                 dto = enterpriseService.loginByToken(token);
             } else {
-                dto = enterpriseService.loginByOauth(requestSignInDto);
+                dto = enterpriseService.loginByPassword(requestSignInDto);
             }
             return ResponseEntity.status(HttpStatus.OK)
                     .body(dto);
@@ -53,10 +53,22 @@ public class EnterpriseController {
     }
 
     @GetMapping("/pwInquiry")
-    public ResponseEntity<ResponseEnterpriseDto> findPw(@RequestBody RequestFindPwDto requestFindPwDto) {
-        ResponseEnterpriseDto dto = enterpriseService.findPw(requestFindPwDto);
-
-        return new ResponseEntity(dto, HttpStatus.OK);
+    public ResponseEntity genTempPwAndSendMail(@RequestBody RequestTempPwDto requestTempPwDto) {
+        try {
+            return enterpriseService.genTempPwAndSendMail(requestTempPwDto);
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
+    @GetMapping("/verify-email-token")
+    public ResponseEntity verifyEmailToken(@RequestParam("token") String token, @RequestParam("email") String email) {
+        return enterpriseService.verifyEmailToken(token, email);
+    }
+
+    @PostMapping("/changePw")
+    public ResponseEntity changePw(@CheckEnt Enterprise enterprise, @RequestBody RequestChangePwDto requestChangePwDto) {
+        String password = requestChangePwDto.getPassword();
+        return enterpriseService.changePw(enterprise, password);
+    }
 }

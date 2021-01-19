@@ -1,9 +1,11 @@
 package com.zizimee.api.pimanager.common.jwt;
 
+import com.zizimee.api.pimanager.enterprise.service.EnterpriseService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,9 +29,14 @@ public class JwtTokenProvider {
 
     public static final String HEADER_NAME = "Authorization";
 
+    /*
     @Qualifier("EnterpriseService")
     private UserDetailsService userDetailsService;
 
+     */
+
+    @Autowired
+    private EnterpriseService enterpriseService;
 
     //객체 초기화
     //secretKey를 Base64로 인코딩
@@ -62,7 +69,8 @@ public class JwtTokenProvider {
 
     //토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUserId(token));
+        //UserDetails userDetails = userDetailsService.loadUserByUsername(getUserId(token));
+        UserDetails userDetails = enterpriseService.loadUserByUsername(getUserId(token));
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }

@@ -12,7 +12,7 @@ public interface ConsentFormRepository extends JpaRepository<ConsentForm, Long> 
 
     @Query(nativeQuery = true,
             value = "SELECT * " +
-            "FROM ConsentForm F " +
+            "FROM Consent_Form F " +
             "WHERE F.Enterprise_Id = ?1 " +
             "ORDER BY F.date DESC ")
     Optional<ConsentForm> findRecentByEntId(Long entId);}

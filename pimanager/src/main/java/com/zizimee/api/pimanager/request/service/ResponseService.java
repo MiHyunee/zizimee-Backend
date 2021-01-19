@@ -8,7 +8,6 @@ import com.zizimee.api.pimanager.request.entity.Request;
 import com.zizimee.api.pimanager.request.entity.Response;
 import com.zizimee.api.pimanager.request.entity.ResponseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,9 +22,8 @@ public class ResponseService {
     private final ConsentStatusRepository consentStatusRepository;
     private final ConsentFormRepository consentFormRepository;
 
-    public void save(Request request) throws Throwable {
+    public void save(Request request) {
         String content;
-        HashMap<String, Character[]> form;
 
         System.out.println(request.getStartDate());
         ConsentStatus beforeConsentStatus = consentStatusRepository.findByDate(request.getStartDate()).orElseThrow(()->new IllegalArgumentException(("동의 여부 파일이 없습니다")));

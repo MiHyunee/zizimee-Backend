@@ -10,8 +10,7 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
     Optional<Enterprise> findByRegisterNmb(String registerNmb);
     Optional<Enterprise> findBySignUpId(String signUpId);
     Optional<Enterprise> findByRegisterNmbAndSignUpId(String registerNmb, String signUpId);
-
-    Enterprise findByName(String name);
+    Optional<Enterprise> findByEmail(String email);
 
     @Query(nativeQuery = true,
             value = "SELECT p.fcm_Token " +
